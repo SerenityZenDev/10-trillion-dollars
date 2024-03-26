@@ -2,8 +2,8 @@ package org.example.tentrilliondollars.user.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.user.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
-import sparta.example.finalproject.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
