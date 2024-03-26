@@ -19,11 +19,10 @@ import org.example.tentrilliondollars.user.entity.User;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order extends TimeStamped {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
