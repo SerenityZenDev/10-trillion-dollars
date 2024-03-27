@@ -53,4 +53,12 @@ public class User {
         this.role = role;
     }
 
+    public void modifyUsername(String username) {
+        this.username = username;
+    }
+
+    public void modifyPassword(String password) {
+        this.password = password;
+    }
+
 }
