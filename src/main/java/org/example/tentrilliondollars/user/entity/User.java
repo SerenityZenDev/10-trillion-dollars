@@ -46,10 +46,11 @@ public class User {
         this.role = role;
     }
 
-    public User(Long userId, String username, String email, UserRoleEnum role) {
+    public User(Long userId, String username, String email, String password, UserRoleEnum role) {
         this.id = userId;
         this.username = username;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
