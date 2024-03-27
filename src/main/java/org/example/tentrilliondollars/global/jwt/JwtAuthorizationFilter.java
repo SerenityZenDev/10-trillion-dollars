@@ -1,8 +1,6 @@
 package org.example.tentrilliondollars.global.jwt;
 
 
-import static org.example.tentrilliondollars.global.jwt.JwtUtil.AUTHORIZATION_KEY;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -46,10 +44,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                 Claims payload = jwtUtil.getUserInfoFromToken(tokenValue);
 
-                Long userId = payload.get("userId", Long.class);
+                Long userId = Long.valueOf(payload.getSubject());
                 String username = payload.get("username", String.class);
                 String email = payload.get("email", String.class);
-                String role = payload.get(AUTHORIZATION_KEY, String.class);
+                String role = payload.get("role", String.class);
 
                 UserRoleEnum roleEnum;
 
