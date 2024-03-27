@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service;
 public class UserDetailsService {
 
 
-    public UserDetails getUser(Long userId, String username, String email, String password,
-        UserRoleEnum role)
+    public UserDetails getUser(Long userId, String username, String email, UserRoleEnum role)
         throws UsernameNotFoundException {
-        User user = new User(userId, username, email, password, role);
+        User user = new User(userId, username, email, role);
         return new UserDetailsImpl(user);
     }
 }

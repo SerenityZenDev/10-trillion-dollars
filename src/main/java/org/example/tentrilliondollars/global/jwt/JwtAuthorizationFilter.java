@@ -49,7 +49,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Long userId = payload.get("userId", Long.class);
                 String username = payload.get("username", String.class);
                 String email = payload.get("email", String.class);
-                String password = payload.get("password", String.class);
                 String role = payload.get(AUTHORIZATION_KEY, String.class);
 
                 UserRoleEnum roleEnum;
@@ -60,7 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     roleEnum = UserRoleEnum.SELLER;
                 }
 
-                setAuthentication(userId, username, email, password, roleEnum);
+                setAuthentication(userId, username, email, roleEnum);
 
             } catch (SecurityException | MalformedJwtException | SignatureException e) {
                 log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -76,11 +75,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 처리
-    public void setAuthentication(Long userId, String username, String email, String password,
-        UserRoleEnum role) {
+    public void setAuthentication(Long userId, String username, String email, UserRoleEnum role) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(userId, username, email, password,
-            role);
+        Authentication authentication = createAuthentication(userId, username, email, role);
         context.setAuthentication(authentication);
 
         SecurityContextHolder.setContext(context);
@@ -88,10 +85,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 객체 생성
     private Authentication createAuthentication(Long userId, String username, String email,
-        String password,
         UserRoleEnum role) {
-        UserDetails userDetails = userDetailsService.getUser(userId, username, email, password,
-            role);
+        UserDetails userDetails = userDetailsService.getUser(userId, username, email, role);
         return new UsernamePasswordAuthenticationToken(userDetails, null,
             userDetails.getAuthorities());
     }

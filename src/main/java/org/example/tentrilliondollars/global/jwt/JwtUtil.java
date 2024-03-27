@@ -69,8 +69,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public String createToken(Long userId, String username, String email, String password,
-        UserRoleEnum role) {
+    public String createToken(Long userId, String username, String email, UserRoleEnum role) {
         Date date = new Date();
 
         // 토큰 만료시간 60분
@@ -80,7 +79,6 @@ public class JwtUtil {
                 .setSubject(String.valueOf(userId))
                 .claim("username", username)
                 .claim("email", email)
-                .claim("password", password)
                 .claim("role", role)
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                 .setIssuedAt(date)

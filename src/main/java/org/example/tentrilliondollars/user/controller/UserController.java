@@ -33,8 +33,7 @@ public class UserController {
         User loginedUser = userService.login(loginRequestDto);
 
         String token = jwtUtil.createToken(loginedUser.getId(), loginedUser.getEmail(),
-            loginedUser.getUsername(),
-            loginedUser.getPassword(), loginedUser.getRole());
+            loginedUser.getUsername(), loginedUser.getRole());
 
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
