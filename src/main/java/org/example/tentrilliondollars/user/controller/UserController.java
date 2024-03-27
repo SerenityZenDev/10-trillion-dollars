@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.jwt.JwtUtil;
 import org.example.tentrilliondollars.user.dto.LoginRequestDto;
 import org.example.tentrilliondollars.user.dto.SignupRequestDto;
+import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +30,11 @@ public class UserController {
     @PostMapping("/users/login")
     public void login(@RequestBody LoginRequestDto loginRequestDto,
         HttpServletResponse response) {
-        userService.login(loginRequestDto);
+        User loginedUser = userService.login(loginRequestDto);
 
-        String token = jwtUtil.createToken(loginRequestDto.getEmail());
+        String token = jwtUtil.createToken(loginedUser.getId(), loginedUser.getEmail(),
+            loginedUser.getUsername(), loginedUser.getRole());
+
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
     }

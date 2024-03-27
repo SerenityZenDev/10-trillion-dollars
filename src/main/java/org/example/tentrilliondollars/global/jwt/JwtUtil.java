@@ -16,6 +16,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -68,14 +69,17 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public String createToken(String email) {
+    public String createToken(Long userId, String username, String email, UserRoleEnum role) {
         Date date = new Date();
 
         // 토큰 만료시간 60분
         long TOKEN_TIME = 60 * 60 * 1000;
         return BEARER_PREFIX +
             Jwts.builder()
-                .setSubject(email)
+                .setSubject(String.valueOf(userId))
+                .claim("username", username)
+                .claim("email", email)
+                .claim("role", role)
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                 .setIssuedAt(date)
                 .signWith(key, signatureAlgorithm)
