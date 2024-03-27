@@ -21,9 +21,7 @@ public class AddressService {
     public void createAddress(AddressRequestDto requestDto, User user) {
         User finduser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
         Address address = new Address(requestDto, finduser);
-
         addressRepository.save(address);
     }
 
@@ -36,10 +34,9 @@ public class AddressService {
     public void updateAddress(Long addressId, AddressRequestDto requestDto, User user) {
         Address address = findOne(addressId);
 
-        if (!address.getUser().equals(user)) {
+        if(!address.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
         }
-
         address.updateAddress(requestDto);
         addressRepository.save(address);
     }
@@ -47,10 +44,9 @@ public class AddressService {
     public void deleteAddress(Long addressId, User user) {
         Address address = findOne(addressId);
 
-        if(!address.getUser().equals(user)) {
+        if(!address.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
         }
-
         addressRepository.delete(address);
     }
 
