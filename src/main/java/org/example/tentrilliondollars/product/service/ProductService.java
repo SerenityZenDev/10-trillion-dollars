@@ -25,20 +25,18 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
-        Page<Product> productPage = productRepository.findAll(pageable);
+        Page<Product> productPage = productRepository.findAllByStateTrue(pageable);
         return getPageResponse(productPage);
     }
 
     public ProductDetailResponse getProductDetail(Long productId) throws NotFoundException {
-        return new ProductDetailResponse(
-            productRepository.findById(productId).orElseThrow(
-                NotFoundException::new
-            )
-        );
+        Product product = getProduct(productId);
+        checkProductStateIsFalse(product);
+        return new ProductDetailResponse(product);
     }
 
     public List<ProductResponse> getAllProductsBySearch(String search, Pageable pageable) {
-        Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(search, pageable);
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseAndStateTrue(search, pageable);
         return getPageResponse(productPage);
     }
 
@@ -59,7 +57,7 @@ public class ProductService {
 
 
     public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
-        Page<Product> productPage = productRepository.findAllByUser(user, pageable);
+        Page<Product> productPage = productRepository.findAllByUserAndStateTrue(user, pageable);
         return getPageResponse(productPage);
     }
 
@@ -69,10 +67,14 @@ public class ProductService {
         throws NotFoundException {
         Product product = getProduct(productId);
 
+        checkProductStateIsFalse(product);
+
         validateProductOwner(user, product);
 
         product.update(productRequest);
     }
+
+
 
     @Transactional
     public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest,
@@ -80,36 +82,47 @@ public class ProductService {
         throws NotFoundException {
         Product product = getProduct(productId);
 
+        checkProductStateIsFalse(product);
+
         validateProductOwner(user, product);
 
         product.updateStock(stockupdateRequest);
     }
 
+    @Transactional
     public void deleteAdminProduct(Long productId, User user) throws NotFoundException {
         Product product = getProduct(productId);
 
+        checkProductStateIsFalse(product);
+
         validateProductOwner(user, product);
 
-        productRepository.delete(product);
+        product.delete();
+    }
+
+    private void checkProductStateIsFalse(Product product) {
+        if (!product.isState()){
+            throw new IllegalArgumentException("해당 상품은 삭제되었습니다.");
+        }
     }
 
 
 
     private Product getProduct(Long productId) throws NotFoundException {
         return productRepository.findById(productId).orElseThrow(
-            NotFoundException::new
+            () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
         );
     }
 
     private void validateUserRole(User user) {
         if (!user.getRole().equals(UserRoleEnum.SELLER)) {
-            throw new IllegalArgumentException("Not authorized");
+            throw new IllegalArgumentException("인증되지 않은 유저입니다.");
         }
     }
 
     private void validateProductOwner(User user, Product product) {
         if (!product.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("User id not matching");
+            throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.넴");
         }
     }
 

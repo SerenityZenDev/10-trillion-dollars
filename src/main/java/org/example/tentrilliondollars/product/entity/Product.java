@@ -39,6 +39,8 @@ public class Product extends TimeStamped {
     private Long stock;
     @Column
     private String photo;
+    @Column
+    private boolean state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -53,6 +55,7 @@ public class Product extends TimeStamped {
         this.stock = stock;
         this.photo = photo;
         this.user = user;
+        this.state = true;
     }
 
     public void update(ProductUpdateRequest productRequest) {
@@ -64,5 +67,9 @@ public class Product extends TimeStamped {
 
     public void updateStock(StockUpdateRequest stockupdateRequest) {
         this.stock = stockupdateRequest.getStock();
+    }
+
+    public void delete(){
+        this.state = false;
     }
 }
