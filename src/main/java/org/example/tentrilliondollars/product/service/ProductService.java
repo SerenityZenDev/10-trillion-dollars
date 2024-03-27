@@ -45,4 +45,8 @@ public class ProductService {
             throw new IllegalArgumentException("Not authorized");
         }
     }
+
+    public List<Product> getAdminProducts(User user) {
+        return productRepository.findAllByUser(user);
+    }
 }
