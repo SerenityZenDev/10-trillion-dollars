@@ -3,12 +3,15 @@ package org.example.tentrilliondollars.user.service;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.user.dto.LoginRequestDto;
+import org.example.tentrilliondollars.user.dto.ModifyPasswordRequestDto;
+import org.example.tentrilliondollars.user.dto.ModifyUserNameRequestDto;
 import org.example.tentrilliondollars.user.dto.SignupRequestDto;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +65,32 @@ public class UserService {
         }
 
         return user;
+    }
+
+    @Transactional
+    public void modifyUsername(User user, ModifyUserNameRequestDto modifyUserNameRequestDto) {
+        User changeNameUser = userRepository.findById(user.getId()).orElseThrow();
+
+        changeNameUser.modifyUsername(modifyUserNameRequestDto.getUsername());
+    }
+
+    @Transactional
+    public void modifyPassword(User user, ModifyPasswordRequestDto modifyPasswordRequestDto) {
+        User changePasswordUser = userRepository.findById(user.getId()).orElseThrow();
+
+        if (!passwordEncoder.matches(modifyPasswordRequestDto.getPassword(),
+            changePasswordUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 불일치");
+        }
+
+        if (!modifyPasswordRequestDto.getChangePassword()
+            .equals(modifyPasswordRequestDto.getChangePasswordCheck())) {
+            throw new IllegalArgumentException("변경할 비밀번호 확인");
+        }
+
+        String changedPassword = passwordEncoder.encode(
+            modifyPasswordRequestDto.getChangePasswordCheck());
+
+        changePasswordUser.modifyPassword(changedPassword);
     }
 }
