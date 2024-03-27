@@ -9,5 +9,4 @@ public class AddressRequestDto {
     private String city;
     private String village;
     private String province;
-
 }
