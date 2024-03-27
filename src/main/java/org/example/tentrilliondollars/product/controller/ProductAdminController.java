@@ -11,6 +11,8 @@ import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,20 +48,19 @@ public class ProductAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAdminProducts(
+    public List<ProductResponse> getAdminProducts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
         // @AuthenticationPrincipal Principal principal
     ){
         User user = new User();
         user.setId(1L);
         user.setRole("admin");
 
-        List<Product> products = productService.getAdminProducts(user);
-        List<ProductResponse> productResponses = new ArrayList<>();
-        products.forEach(product -> productResponses.add(new ProductResponse(product)));
+        Pageable pageable = PageRequest.of(page, size);
 
+        return productService.getAdminProducts(user, pageable);
 
-        return ResponseEntity.status(200)
-            .body(productResponses);
     }
 
     @PutMapping("/{productId}")
