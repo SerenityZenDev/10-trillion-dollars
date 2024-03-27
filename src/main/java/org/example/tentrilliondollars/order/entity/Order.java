@@ -19,7 +19,7 @@ import org.example.tentrilliondollars.user.entity.User;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order extends TimeStamped {
 
     @Id
