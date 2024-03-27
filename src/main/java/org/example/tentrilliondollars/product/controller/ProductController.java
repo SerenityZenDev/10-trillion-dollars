@@ -39,5 +39,15 @@ public class ProductController {
             .body(productService.getProductDetail(productId));
     }
 
+    @GetMapping("/search")
+    public List<ProductResponse> getSearchProducts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "") String search
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.getAllProductsBySearch(search, pageable);
+    }
+
 
 }

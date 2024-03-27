@@ -2,16 +2,17 @@ package org.example.tentrilliondollars.product.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.service.ProductService;
-import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,14 +33,10 @@ public class ProductAdminController {
 
     @PostMapping
     public ResponseEntity<String> createAdminProduct(
-        @RequestBody ProductRequest productRequest
-        // @AuthenticationPrincipal Principal principal
+        @RequestBody ProductRequest productRequest,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        // 임시 유저 ID 1L
-        User user = new User();
-        user.setId(1L);
-        user.setRole("admin");
-        productService.createAdminProduct(productRequest, user);
+        productService.createAdminProduct(productRequest, userDetails.getUser());
 
         return ResponseEntity.status(201)
             .body("Product created successfully");
@@ -48,30 +45,24 @@ public class ProductAdminController {
     @GetMapping
     public List<ProductResponse> getAdminProducts(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-        // @AuthenticationPrincipal Principal principal
+        @RequestParam(defaultValue = "10") int size,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        User user = new User();
-        user.setId(1L);
-        user.setRole("admin");
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return productService.getAdminProducts(user, pageable);
+        return productService.getAdminProducts(userDetails.getUser(), pageable);
 
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<String> updateAdminProduct(
         @PathVariable Long productId,
-        @RequestBody ProductUpdateRequest productRequest
-        // @AuthenticationPrincipal Principal principal
+        @RequestBody ProductUpdateRequest productRequest,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws NotFoundException {
-        User user = new User();
-        user.setId(1L);
-        user.setRole("admin");
 
-        productService.updateAdminProduct(productId, productRequest, user);
+        productService.updateAdminProduct(productId, productRequest, userDetails.getUser());
 
         return ResponseEntity.status(200)
             .body("Product update successfully");
@@ -80,14 +71,12 @@ public class ProductAdminController {
     @PatchMapping("/{productId}")
     public ResponseEntity<String> updateAdminProductStock(
         @PathVariable Long productId,
-        @RequestBody StockUpdateRequest stockupdateRequest
-        // @AuthenticationPrincipal Principal principal
+        @RequestBody StockUpdateRequest stockupdateRequest,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws NotFoundException {
-        User user = new User();
-        user.setId(1L);
-        user.setRole("admin");
 
-        productService.updateAdminProductStock(productId, stockupdateRequest, user);
+        productService.updateAdminProductStock(productId, stockupdateRequest,
+            userDetails.getUser());
 
         return ResponseEntity.status(200)
             .body("Product stock update successfully");
@@ -95,14 +84,11 @@ public class ProductAdminController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteAdminProduct(
-        @PathVariable Long productId
-        // @AuthenticationPrincipal Principal principal
+        @PathVariable Long productId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws NotFoundException {
-        User user = new User();
-        user.setId(1L);
-        user.setRole("admin");
 
-        productService.deleteAdminProduct(productId, user);
+        productService.deleteAdminProduct(productId, userDetails.getUser());
 
         return ResponseEntity.status(200)
             .body("Product delete successfully");

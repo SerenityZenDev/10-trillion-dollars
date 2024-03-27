@@ -11,6 +11,7 @@ import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
+import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,11 @@ public class ProductService {
                 NotFoundException::new
             )
         );
+    }
+
+    public List<ProductResponse> getAllProductsBySearch(String search, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(search, pageable);
+        return getPageResponse(productPage);
     }
 
     public void createAdminProduct(ProductRequest productRequest, User user) {
@@ -87,6 +93,8 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+
+
     private Product getProduct(Long productId) throws NotFoundException {
         return productRepository.findById(productId).orElseThrow(
             NotFoundException::new
@@ -94,7 +102,7 @@ public class ProductService {
     }
 
     private void validateUserRole(User user) {
-        if (!user.getRole().equals("admin")) {
+        if (!user.getRole().equals(UserRoleEnum.SELLER)) {
             throw new IllegalArgumentException("Not authorized");
         }
     }
@@ -110,6 +118,7 @@ public class ProductService {
             .map(ProductResponse::new)
             .collect(Collectors.toList());
     }
+
 
 }
 
