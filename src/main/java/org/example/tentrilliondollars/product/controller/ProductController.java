@@ -3,6 +3,7 @@ package org.example.tentrilliondollars.product.controller;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
@@ -20,6 +21,9 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /**
+     * todo : 페이징 처리 추가
+     */
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
@@ -30,12 +34,16 @@ public class ProductController {
             .body(productResponses);
     }
 
+    /**
+     * todo : "쿼리가 2개 나가는 현상 수정"
+     */
+
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponse> getProductDetail(
+    public ResponseEntity<ProductDetailResponse> getProductDetail(
         @PathVariable Long productId
     ) throws NotFoundException {
         return ResponseEntity.status(200)
-            .body(new ProductResponse(productService.getProductDetail(productId)));
+            .body(new ProductDetailResponse(productService.getProductDetail(productId)));
     }
 
 

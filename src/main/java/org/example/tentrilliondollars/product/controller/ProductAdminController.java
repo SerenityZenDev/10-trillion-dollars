@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/product")
+@RequestMapping("/admin/products")
 public class ProductAdminController {
 
     private final ProductService productService;
@@ -37,6 +37,7 @@ public class ProductAdminController {
         // 임시 유저 ID 1L
         User user = new User();
         user.setId(1L);
+        user.setRole("admin");
         productService.createAdminProduct(productRequest, user);
 
         return ResponseEntity.status(201)
@@ -49,6 +50,7 @@ public class ProductAdminController {
     ){
         User user = new User();
         user.setId(1L);
+        user.setRole("admin");
 
         List<Product> products = productService.getAdminProducts(user);
         List<ProductResponse> productResponses = new ArrayList<>();
@@ -67,6 +69,7 @@ public class ProductAdminController {
     ) throws NotFoundException {
         User user = new User();
         user.setId(1L);
+        user.setRole("admin");
 
         productService.updateAdminProduct(productId, productRequest, user);
 
@@ -82,6 +85,7 @@ public class ProductAdminController {
     ) throws NotFoundException {
         User user = new User();
         user.setId(1L);
+        user.setRole("admin");
 
         productService.updateAdminProductStock(productId, stockupdateRequest, user);
 
@@ -96,6 +100,7 @@ public class ProductAdminController {
     ) throws NotFoundException {
         User user = new User();
         user.setId(1L);
+        user.setRole("admin");
 
         productService.deleteAdminProduct(productId, user);
 

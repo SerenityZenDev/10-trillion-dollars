@@ -69,7 +69,6 @@ public class ProductService {
 
         product.updateStock(stockupdateRequest);
     }
-
     public void deleteAdminProduct(Long productId, User user) throws NotFoundException {
         Product product = getProduct(productId);
 
