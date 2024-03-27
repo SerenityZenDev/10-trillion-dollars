@@ -23,6 +23,7 @@ public class AddressService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         Address address = new Address(requestDto, finduser);
+
         addressRepository.save(address);
     }
 
@@ -38,8 +39,19 @@ public class AddressService {
         if (!address.getUser().equals(user)) {
             throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
         }
+
         address.updateAddress(requestDto);
         addressRepository.save(address);
+    }
+
+    public void deleteAddress(Long addressId, User user) {
+        Address address = findOne(addressId);
+
+        if(!address.getUser().equals(user)) {
+            throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
+        }
+
+        addressRepository.delete(address);
     }
 
     private Address findOne(Long addressId) {

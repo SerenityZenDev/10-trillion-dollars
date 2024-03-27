@@ -44,4 +44,13 @@ public class AddressController {
 
         return ResponseEntity.ok("주소 수정 완료");
     }
+
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<String> deleteAddress(
+            @PathVariable Long addressId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        addressService.deleteAddress(addressId, userDetails.getUser());
+
+        return ResponseEntity.ok("주소 삭제 완료");
+    }
 }
