@@ -1,6 +1,5 @@
 package org.example.tentrilliondollars.product.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +24,7 @@ public class ProductService {
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
-        return productPage.getContent().stream()
-            .map(ProductResponse::new)
-            .collect(Collectors.toList());
+        return getPageResponse(productPage);
     }
 
     public Product getProductDetail(Long productId) throws NotFoundException {
@@ -54,10 +51,9 @@ public class ProductService {
 
     public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByUser(user, pageable);
-        return productPage.getContent().stream()
-            .map(ProductResponse::new)
-            .collect(Collectors.toList());
+        return getPageResponse(productPage);
     }
+
 
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
@@ -69,10 +65,9 @@ public class ProductService {
         product.update(productRequest);
     }
 
-
-
     @Transactional
-    public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest, User user)
+    public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest,
+        User user)
         throws NotFoundException {
         Product product = getProduct(productId);
 
@@ -80,6 +75,7 @@ public class ProductService {
 
         product.updateStock(stockupdateRequest);
     }
+
     public void deleteAdminProduct(Long productId, User user) throws NotFoundException {
         Product product = getProduct(productId);
 
@@ -104,6 +100,12 @@ public class ProductService {
         if (!product.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("User id not matching");
         }
+    }
+
+    private List<ProductResponse> getPageResponse(Page<Product> productPage) {
+        return productPage.getContent().stream()
+            .map(ProductResponse::new)
+            .collect(Collectors.toList());
     }
 
 }
