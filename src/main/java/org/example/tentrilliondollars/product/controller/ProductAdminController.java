@@ -75,7 +75,7 @@ public class ProductAdminController {
     }
 
     @PatchMapping("/{productId}")
-    public void updateAdminProductStock(
+    public ResponseEntity<String> updateAdminProductStock(
         @PathVariable Long productId,
         @RequestBody StockUpdateRequest stockupdateRequest
         // @AuthenticationPrincipal Principal principal
@@ -85,12 +85,21 @@ public class ProductAdminController {
 
         productService.updateAdminProductStock(productId, stockupdateRequest, user);
 
+        return ResponseEntity.status(200)
+            .body("Product stock update successfully");
     }
 
-    @DeleteMapping
-    public void deleteAdminProduct(
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> deleteAdminProduct(
+        @PathVariable Long productId
         // @AuthenticationPrincipal Principal principal
-    ){
+    ) throws NotFoundException {
+        User user = new User();
+        user.setId(1L);
 
+        productService.deleteAdminProduct(productId, user);
+
+        return ResponseEntity.status(200)
+            .body("Product delete successfully");
     }
 }

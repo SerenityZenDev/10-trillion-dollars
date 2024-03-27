@@ -70,6 +70,14 @@ public class ProductService {
         product.updateStock(stockupdateRequest);
     }
 
+    public void deleteAdminProduct(Long productId, User user) throws NotFoundException {
+        Product product = getProduct(productId);
+
+        validateProductOwner(user, product);
+
+        productRepository.delete(product);
+    }
+
     private Product getProduct(Long productId) throws NotFoundException {
         return productRepository.findById(productId).orElseThrow(
             NotFoundException::new
@@ -87,5 +95,6 @@ public class ProductService {
             throw new IllegalArgumentException("User id not matching");
         }
     }
+
 }
 
