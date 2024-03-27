@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.tentrilliondollars.global.TimeStamped;
-import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.user.entity.User;
@@ -46,7 +45,8 @@ public class Product extends TimeStamped {
     private User user;
 
     @Builder
-    public Product(String name, Long price, String description, Long stock, String photo, User user) {
+    public Product(String name, Long price, String description, Long stock, String photo,
+        User user) {
         this.name = name;
         this.price = price;
         this.description = description;
