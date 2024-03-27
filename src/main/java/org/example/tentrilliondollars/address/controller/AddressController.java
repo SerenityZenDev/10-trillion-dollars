@@ -34,4 +34,14 @@ public class AddressController {
 
         return ResponseEntity.ok(addressList);
     }
+
+    @PutMapping("/{addressId}")
+    public ResponseEntity<String> updateAddress(
+            @PathVariable Long addressId,
+            @RequestBody AddressRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        addressService.updateAddress(addressId, requestDto, userDetails.getUser());
+
+        return ResponseEntity.ok("주소 수정 완료");
+    }
 }

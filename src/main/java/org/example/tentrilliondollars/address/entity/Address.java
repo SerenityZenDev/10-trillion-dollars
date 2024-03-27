@@ -49,4 +49,10 @@ public class Address {
         this.province = requestDto.getProvince();
         this.user = user;
     }
+
+    public void updateAddress(AddressRequestDto requestDto) {
+        this.city = requestDto.getCity();
+        this.village = requestDto.getVillage();
+        this.province = requestDto.getProvince();
+    }
 }
