@@ -3,11 +3,13 @@ package org.example.tentrilliondollars.product.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
+import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +50,15 @@ public class ProductService {
 
     public List<Product> getAdminProducts(User user) {
         return productRepository.findAllByUser(user);
+    }
+
+    @Transactional
+    public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
+        throws NotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(
+            NotFoundException::new
+        );
+
+        product.update(productRequest);
     }
 }
