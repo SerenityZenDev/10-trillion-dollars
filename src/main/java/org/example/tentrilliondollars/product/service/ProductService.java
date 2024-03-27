@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
+import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
@@ -27,9 +28,11 @@ public class ProductService {
         return getPageResponse(productPage);
     }
 
-    public Product getProductDetail(Long productId) throws NotFoundException {
-        return productRepository.findById(productId).orElseThrow(
-            NotFoundException::new
+    public ProductDetailResponse getProductDetail(Long productId) throws NotFoundException {
+        return new ProductDetailResponse(
+            productRepository.findById(productId).orElseThrow(
+                NotFoundException::new
+            )
         );
     }
 

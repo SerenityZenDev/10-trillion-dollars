@@ -31,14 +31,12 @@ public class ProductController {
         return productService.getAllProducts(pageable);
     }
 
-
-
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDetailResponse> getProductDetail(
         @PathVariable Long productId
     ) throws NotFoundException {
         return ResponseEntity.status(200)
-            .body(new ProductDetailResponse(productService.getProductDetail(productId)));
+            .body(productService.getProductDetail(productId));
     }
 
 
