@@ -2,6 +2,8 @@ package org.example.tentrilliondollars.product.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
+import org.example.tentrilliondollars.product.service.ProductService;
+import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,12 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/admin/product")
 public class ProductAdminController {
+
+    private final ProductService productService;
+
     @PostMapping
-    public void createAdminProduct(
+    public String createAdminProduct(
         @RequestBody ProductRequest productRequest
         // @AuthenticationPrincipal Principal principal
     ) {
-
+        // 임시 유저 ID 1L
+        User user = new User();
+        productService.createAdminProduct(productRequest, user);
+        return "Product created successfully";
     }
 
     @GetMapping
