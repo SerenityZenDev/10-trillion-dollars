@@ -52,7 +52,7 @@ public class UserService {
             .build());
     }
 
-    public void login(LoginRequestDto loginRequestDto) {
+    public User login(LoginRequestDto loginRequestDto) {
 
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
@@ -61,6 +61,6 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-
+        return user;
     }
 }
