@@ -39,8 +39,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         String tokenValue = jwtUtil.getTokenFromCookie(req);
 
+        tokenValue = jwtUtil.resolveToken(tokenValue);
+
         if (StringUtils.hasText(tokenValue)) {
             try {
+
                 Claims payload = jwtUtil.getUserInfoFromToken(tokenValue);
 
                 Long userId = payload.get("userId", Long.class);
