@@ -55,12 +55,10 @@ public class ProductService {
         productRepository.save(product);
     }
 
-
     public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByUserAndStateTrue(user, pageable);
         return getPageResponse(productPage);
     }
-
 
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
@@ -73,8 +71,6 @@ public class ProductService {
 
         product.update(productRequest);
     }
-
-
 
     @Transactional
     public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest,
@@ -106,9 +102,7 @@ public class ProductService {
         }
     }
 
-
-
-    private Product getProduct(Long productId) throws NotFoundException {
+    public Product getProduct(Long productId) throws NotFoundException {
         return productRepository.findById(productId).orElseThrow(
             () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
         );
@@ -122,7 +116,7 @@ public class ProductService {
 
     private void validateProductOwner(User user, Product product) {
         if (!product.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.넴");
+            throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.");
         }
     }
 
@@ -131,7 +125,6 @@ public class ProductService {
             .map(ProductResponse::new)
             .collect(Collectors.toList());
     }
-
 
 }
 
