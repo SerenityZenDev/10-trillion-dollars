@@ -34,6 +34,8 @@ public class Product extends TimeStamped {
     private String description;
     @Column
     private Long stock;
+    @Column
+    private String photo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
