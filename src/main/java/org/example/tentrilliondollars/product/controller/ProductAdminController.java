@@ -1,13 +1,11 @@
 package org.example.tentrilliondollars.product.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
-import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -52,7 +50,7 @@ public class ProductAdminController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
         // @AuthenticationPrincipal Principal principal
-    ){
+    ) {
         User user = new User();
         user.setId(1L);
         user.setRole("admin");
