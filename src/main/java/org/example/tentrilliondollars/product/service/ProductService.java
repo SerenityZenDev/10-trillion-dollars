@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
+import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
@@ -42,11 +43,6 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    private void validateUserRole(User user) {
-        if (!user.getRole().equals("admin")) {
-            throw new IllegalArgumentException("Not authorized");
-        }
-    }
 
     public List<Product> getAdminProducts(User user) {
         return productRepository.findAllByUser(user);
@@ -55,10 +51,41 @@ public class ProductService {
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
         throws NotFoundException {
-        Product product = productRepository.findById(productId).orElseThrow(
-            NotFoundException::new
-        );
+        Product product = getProduct(productId);
+
+        validateProductOwner(user, product);
 
         product.update(productRequest);
     }
+
+
+
+    @Transactional
+    public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest, User user)
+        throws NotFoundException {
+        Product product = getProduct(productId);
+
+        validateProductOwner(user, product);
+
+        product.updateStock(stockupdateRequest);
+    }
+
+    private Product getProduct(Long productId) throws NotFoundException {
+        return productRepository.findById(productId).orElseThrow(
+            NotFoundException::new
+        );
+    }
+
+    private void validateUserRole(User user) {
+        if (!user.getRole().equals("admin")) {
+            throw new IllegalArgumentException("Not authorized");
+        }
+    }
+
+    private void validateProductOwner(User user, Product product) {
+        if (!product.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("User id not matching");
+        }
+    }
 }
+

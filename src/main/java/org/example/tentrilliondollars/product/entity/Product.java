@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.example.tentrilliondollars.global.TimeStamped;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
+import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.user.entity.User;
 
 @Getter
@@ -59,5 +60,9 @@ public class Product extends TimeStamped {
         this.price = productRequest.getPrice();
         this.description = productRequest.getDescription();
         this.photo = productRequest.getPhoto();
+    }
+
+    public void updateStock(StockUpdateRequest stockupdateRequest) {
+        this.stock = stockupdateRequest.getStock();
     }
 }

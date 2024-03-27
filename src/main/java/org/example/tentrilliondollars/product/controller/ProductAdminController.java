@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
+import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
@@ -73,10 +74,16 @@ public class ProductAdminController {
             .body("Product update successfully");
     }
 
-    @PatchMapping
+    @PatchMapping("/{productId}")
     public void updateAdminProductStock(
+        @PathVariable Long productId,
+        @RequestBody StockUpdateRequest stockupdateRequest
         // @AuthenticationPrincipal Principal principal
-    ){
+    ) throws NotFoundException {
+        User user = new User();
+        user.setId(1L);
+
+        productService.updateAdminProductStock(productId, stockupdateRequest, user);
 
     }
 
