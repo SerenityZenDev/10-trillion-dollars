@@ -1,6 +1,8 @@
 package org.example.tentrilliondollars.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.address.entity.Address;
+import org.example.tentrilliondollars.address.repository.AddressRepository;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
@@ -26,18 +28,23 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
 
-    public Order createOrder(UserDetailsImpl userDetails){
-        Order order = new Order(userDetails.getUser(),OrderState.PREPARING);
+    public Order createOrder(UserDetailsImpl userDetails,Long addressId){
+        Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
         return orderRepository.save(order);
     }
     @Transactional
-    public void saveOrderDetails(Map<String,Long> basket,Order order){
-        for(String key:basket.keySet()){
-            Long price = productRepository.findProductByName(key).getPrice();
+    public void saveOrderDetails(Map<Long,Long> basket,Order order) throws Exception {
+        for(Long key:basket.keySet()){
+            if(!CheckStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
+        }
+        for(Long key:basket.keySet()){
+            Long price = productRepository.getReferenceById(key).getPrice();
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),price);
             orderDetailRepository.save(orderDetail);
             updateStock(key,basket.get(key));
+
         }
 
     }
@@ -55,10 +62,15 @@ public class OrderService {
         return Objects.equals(userDetails.getUser().getId(), orderRepository.getReferenceById(orderId).getUser().getId());
     }
 
-    public void updateStock(String product_name,Long quantity){
-        Product product =  productRepository.findProductByName(product_name);
+    public void updateStock(Long productId,Long quantity){
+        Product product =  productRepository.getReferenceById(productId);
         product.updateStockAfterOrder(quantity);
 
+    }
+
+    public boolean CheckStock(Long productId,Long quantity){
+        Long stock =productRepository.getReferenceById(productId).getStock();
+        return stock - quantity >= 0;
     }
 
 }

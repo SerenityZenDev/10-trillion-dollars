@@ -4,6 +4,7 @@ package org.example.tentrilliondollars.order.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.CommonResponseDto;
+import org.example.tentrilliondollars.order.dto.OrderRequestDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
@@ -25,9 +26,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto> makeOrder(@RequestBody Map<String,Long> basket, @AuthenticationPrincipal UserDetailsImpl userDetails){
-       Order order =orderService.createOrder(userDetails);
-       orderService.saveOrderDetails(basket,order);
+    public ResponseEntity<CommonResponseDto> makeOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+       Order order =orderService.createOrder(userDetails,requestDto.getAddressId());
+       orderService.saveOrderDetails(requestDto.getBasket(),order);
        return ResponseEntity.status(200).body(new CommonResponseDto(200,"주문이 완료됐습니다."));
     }
 

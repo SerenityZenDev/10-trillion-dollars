@@ -3,6 +3,7 @@ package org.example.tentrilliondollars.order.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.global.TimeStamped;
 import org.example.tentrilliondollars.user.entity.User;
 
@@ -16,9 +17,7 @@ public class Order extends TimeStamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * todo : enum으로 변경(배송 전, 배송 중, 배송 후)
-     */
+
     @Enumerated(value = EnumType.STRING)
     private OrderState state;
 
@@ -27,10 +26,14 @@ public class Order extends TimeStamped {
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Address address;
 
-    public Order(User user,OrderState state){
+    public Order(User user,OrderState state,Address address){
         this.user = user;
         this.state = state;
+        this.address = address;
     }
 
     public void changeState(OrderState state){
