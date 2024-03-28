@@ -3,11 +3,13 @@ package org.example.tentrilliondollars.review.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
+import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.review.dto.ReviewRequest;
 import org.example.tentrilliondollars.review.dto.ReviewResponse;
 import org.example.tentrilliondollars.review.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +31,14 @@ public class ReviewController {
         @RequestBody ReviewRequest reviewRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+
         reviewService.createReview(productId, reviewRequest, userDetails.getUser().getId());
         return ResponseEntity.ok().body("후기가 등록 되었습니다.");
     }
     @GetMapping("/reviews")
     //리뷰 전체 조회
     public ResponseEntity<List<ReviewResponse>> getAllReviews(
+        @PathVariable Long productId
     ) {
         List<ReviewResponse> responseList = reviewService.getAllReviews();
         return ResponseEntity.ok().body(responseList);
@@ -42,18 +46,20 @@ public class ReviewController {
     //리뷰 선택 조회
     @GetMapping("/reviews/{reviewId}")
     public ResponseEntity<ReviewResponse> getReview(
+        @PathVariable Long productId,
         @PathVariable Long reviewId
     ) {
-        ReviewResponse reviewResponse = reviewService.getReview(reviewId);
+        ReviewResponse reviewResponse = reviewService.getReview(reviewId,productId);
         return ResponseEntity.ok().body(reviewResponse);
     }
     //리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<String> deleteReview(
         @PathVariable Long reviewId,
+        @PathVariable Long productId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        reviewService.deleteReview(reviewId,userDetails.getUser().getId());
+        reviewService.deleteReview(reviewId,userDetails.getUser().getId(),productId);
         return ResponseEntity.ok().body("리뷰가 삭제 되었습니다.");
     }
     //리뷰 수정
@@ -61,9 +67,13 @@ public class ReviewController {
     public ResponseEntity<String> updateReview(
         @PathVariable Long reviewId,
         @RequestBody ReviewRequest reviewRequest,
+        @PathVariable Long productId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        reviewService.updateReview(reviewId,reviewRequest,userDetails.getUser().getId());
+        reviewService.updateReview(reviewId,reviewRequest,userDetails.getUser().getId(),productId);
         return ResponseEntity.ok().body("리뷰가 수정 되었습니다.");
     }
+
+
+
 }

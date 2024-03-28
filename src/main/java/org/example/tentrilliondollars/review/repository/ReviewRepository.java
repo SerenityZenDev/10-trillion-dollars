@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     //별점 내림차순 정렬
     List<Review> findAllByOrderByScoreDesc();
+    //삭제가 안된 상품만 찾기
+    List<Review> findByProductStateTrue();
 }

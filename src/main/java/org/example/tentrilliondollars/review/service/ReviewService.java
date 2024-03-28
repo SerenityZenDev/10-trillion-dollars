@@ -27,7 +27,7 @@ public class ReviewService {
         ReviewRequest reviewRequest,
         Long userId
     ) {
-        Product product = findProductByIdOrThrow(productId);
+        Product product = findProductByIdAndCheckState(productId);
         User user = findUserByIdOrThrow(userId);
         Review review = new Review(reviewRequest, product, user);
         reviewRepository.save(review);
@@ -35,23 +35,27 @@ public class ReviewService {
     // 게시글 전체 조회
     public List<ReviewResponse> getAllReviews(
     ) {
-        List<Review> reviewList = reviewRepository.findAll();
+        List<Review> reviewList = reviewRepository.findByProductStateTrue();
         return reviewList.stream()
             .map(ReviewResponse::new)
             .collect(Collectors.toList());
     }
     //리뷰 선택 조회
     public ReviewResponse getReview(
-        Long reviewId
+        Long reviewId,
+        Long productId
     ) {
+        Product product = findProductByIdAndCheckState(productId);
         Review review = findReviewByIdOrThrow(reviewId);
         return new ReviewResponse(review);
     }
     //리뷰 삭제
     public void deleteReview(
         Long reviewId,
-        Long userId
+        Long userId,
+        Long productId
     ) {
+        Product product = findProductByIdAndCheckState(productId);
         Review review = findReviewByIdOrThrow(reviewId);
         checkAuthorization(review,userId);
         reviewRepository.delete(review);
@@ -60,8 +64,10 @@ public class ReviewService {
     public void updateReview(
         Long reviewId,
         ReviewRequest reviewRequest,
-        Long userId
+        Long userId,
+        Long productId
     ) {
+        Product product = findProductByIdAndCheckState(productId);
         Review review = findReviewByIdOrThrow(reviewId);
         checkAuthorization(review,userId);
         review.UpdateReview(reviewRequest);
@@ -72,11 +78,6 @@ public class ReviewService {
     public Review findReviewByIdOrThrow(Long reviewId) {
         return reviewRepository.findById(reviewId)
             .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
-    }
-    //상품 유무 메서드
-    public Product findProductByIdOrThrow(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
     }
     //유저 유무 메서드
     public User findUserByIdOrThrow(Long userId) {
@@ -89,5 +90,13 @@ public class ReviewService {
             throw new AccessDeniedException("다른 유저의 게시글을 수정/삭제 하실수 없습니다.");
         }
     }
-
+    //프로덕트 삭제 유무
+    public Product findProductByIdAndCheckState(Long productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+        if (!product.isState()) {
+            throw new IllegalArgumentException("해당 상품은 삭제되었습니다.");
+        }
+        return product;
+    }
 }
