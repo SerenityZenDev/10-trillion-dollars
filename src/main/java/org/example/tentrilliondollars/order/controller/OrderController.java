@@ -25,7 +25,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto> makeOrder(@RequestBody Map<String,Long> basket, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponseDto> makeOrder(@RequestBody Map<Long,Long> basket, @AuthenticationPrincipal UserDetailsImpl userDetails){
        Order order =orderService.createOrder(userDetails);
        orderService.saveOrderDetails(basket,order);
        return ResponseEntity.status(200).body(new CommonResponseDto(200,"주문이 완료됐습니다."));

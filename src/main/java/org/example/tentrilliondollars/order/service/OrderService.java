@@ -32,9 +32,9 @@ public class OrderService {
         return orderRepository.save(order);
     }
     @Transactional
-    public void saveOrderDetails(Map<String,Long> basket,Order order){
-        for(String key:basket.keySet()){
-            Long price = productRepository.findProductByName(key).getPrice();
+    public void saveOrderDetails(Map<Long,Long> basket,Order order){
+        for(Long key:basket.keySet()){
+            Long price = productRepository.getReferenceById(key).getPrice();
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),price);
             orderDetailRepository.save(orderDetail);
             updateStock(key,basket.get(key));
@@ -55,8 +55,8 @@ public class OrderService {
         return Objects.equals(userDetails.getUser().getId(), orderRepository.getReferenceById(orderId).getUser().getId());
     }
 
-    public void updateStock(String product_name,Long quantity){
-        Product product =  productRepository.findProductByName(product_name);
+    public void updateStock(Long productId,Long quantity){
+        Product product =  productRepository.getReferenceById(productId);
         product.updateStockAfterOrder(quantity);
 
     }

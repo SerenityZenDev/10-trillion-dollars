@@ -28,7 +28,7 @@ public class OrderDetail {
     private Long id;
 
     @Column
-    private String product_name;
+    private Long productId;
 
     @Column
     private Long price;
@@ -40,8 +40,8 @@ public class OrderDetail {
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    public OrderDetail(Order order,String product_name,Long quantity,Long price){
-        this.product_name = product_name;
+    public OrderDetail(Order order,Long productId,Long quantity,Long price){
+        this.productId = productId;
         this.quantity = quantity;
         this.order = order;
         this.price = price;
