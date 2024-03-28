@@ -11,11 +11,12 @@ import org.example.tentrilliondollars.order.entity.OrderDetail;
 @AllArgsConstructor
 @ToString
 public class OrderResponseDto {
-    private String product_name;
+    private Long productId;
     private Long quantity;
 
+
     public OrderResponseDto(OrderDetail orderDetail){
-        this.product_name = orderDetail.getProduct_name();
+        this.productId = orderDetail.getProductId();
         this.quantity = orderDetail.getQuantity();
 
     }
