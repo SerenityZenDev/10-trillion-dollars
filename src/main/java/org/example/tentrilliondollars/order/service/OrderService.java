@@ -35,12 +35,16 @@ public class OrderService {
         return orderRepository.save(order);
     }
     @Transactional
-    public void saveOrderDetails(Map<Long,Long> basket,Order order){
+    public void saveOrderDetails(Map<Long,Long> basket,Order order) throws Exception {
+        for(Long key:basket.keySet()){
+            if(!CheckStock(key,basket.get(key))){throw new Exception(key+"수량부족");}
+        }
         for(Long key:basket.keySet()){
             Long price = productRepository.getReferenceById(key).getPrice();
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),price);
             orderDetailRepository.save(orderDetail);
             updateStock(key,basket.get(key));
+
         }
 
     }
@@ -62,6 +66,11 @@ public class OrderService {
         Product product =  productRepository.getReferenceById(productId);
         product.updateStockAfterOrder(quantity);
 
+    }
+
+    public boolean CheckStock(Long productId,Long quantity){
+        Long stock =productRepository.getReferenceById(productId).getStock();
+        return stock - quantity >= 0;
     }
 
 }
