@@ -3,14 +3,11 @@ package org.example.tentrilliondollars.review.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
-import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.review.dto.ReviewRequest;
 import org.example.tentrilliondollars.review.dto.ReviewResponse;
 import org.example.tentrilliondollars.review.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +35,6 @@ public class ReviewController {
     @GetMapping("/reviews")
     //리뷰 전체 조회
     public ResponseEntity<List<ReviewResponse>> getAllReviews(
-        @PathVariable Long productId
     ) {
         List<ReviewResponse> responseList = reviewService.getAllReviews();
         return ResponseEntity.ok().body(responseList);
