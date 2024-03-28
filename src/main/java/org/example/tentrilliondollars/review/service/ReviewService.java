@@ -85,7 +85,7 @@ public class ReviewService {
     }
     //유저 권한 확인 메서드
     public void checkAuthorization(Review review,Long userId){
-        if(review.getUser().getId().equals(userId)) {
+        if(!review.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("다른 유저의 게시글을 수정/삭제 하실수 없습니다.");
         }
     }
