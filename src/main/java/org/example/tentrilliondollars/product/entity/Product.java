@@ -72,4 +72,8 @@ public class Product extends TimeStamped {
     public void delete(){
         this.state = false;
     }
+
+    public void updateStockAfterOrder(Long quantity){
+        this.stock = stock - quantity;
+    }
 }

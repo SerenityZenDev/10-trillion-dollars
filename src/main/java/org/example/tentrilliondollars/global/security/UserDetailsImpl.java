@@ -2,22 +2,21 @@ package org.example.tentrilliondollars.global.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import lombok.Getter;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
 
     public UserDetailsImpl(User user) {
         this.user = user;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     @Override
