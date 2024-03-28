@@ -37,7 +37,7 @@ public class OrderService {
     @Transactional
     public void saveOrderDetails(Map<Long,Long> basket,Order order) throws Exception {
         for(Long key:basket.keySet()){
-            if(!CheckStock(key,basket.get(key))){throw new Exception(key+"수량부족");}
+            if(!CheckStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
         }
         for(Long key:basket.keySet()){
             Long price = productRepository.getReferenceById(key).getPrice();
