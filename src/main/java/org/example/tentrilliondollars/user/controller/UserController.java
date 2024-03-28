@@ -6,34 +6,40 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.jwt.JwtUtil;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
+import org.example.tentrilliondollars.user.dto.DeleteUserRequestDto;
 import org.example.tentrilliondollars.user.dto.LoginRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyPasswordRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyUserNameRequestDto;
 import org.example.tentrilliondollars.user.dto.SignupRequestDto;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
 
-    @PostMapping("/users/signup")
-    public void signup(
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(
         @Valid @RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
+        return ResponseEntity.ok().body("회원가입 성공");
     }
 
-    @PostMapping("/users/login")
-    public void login(@RequestBody LoginRequestDto loginRequestDto,
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto,
         HttpServletResponse response) {
         User loginedUser = userService.login(loginRequestDto);
 
@@ -42,20 +48,36 @@ public class UserController {
 
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
+
+        return ResponseEntity.ok().body("로그인 성공");
     }
 
-    @PutMapping("/users/username")
-    public void modifyUsername(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    @PutMapping("/username")
+    public ResponseEntity<String> modifyUsername(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody
-        ModifyUserNameRequestDto requestDto) {
-        userService.modifyUsername(userDetails.getUser(), requestDto);
+        ModifyUserNameRequestDto modifyUserNameRequestDto) {
+        userService.modifyUsername(userDetails.getUser(), modifyUserNameRequestDto);
+
+        return ResponseEntity.ok().body("유저네임 수정 성공");
     }
 
-    @PutMapping("/users/password")
-    public void modifyPassword(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    @PutMapping("/password")
+    public ResponseEntity<String> modifyPassword(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody
-        ModifyPasswordRequestDto requestDto) {
-        userService.modifyPassword(userDetails.getUser(), requestDto);
+        ModifyPasswordRequestDto modifyPasswordRequestDto) {
+        userService.modifyPassword(userDetails.getUser(), modifyPasswordRequestDto);
+
+        return ResponseEntity.ok().body("비밀번호 수정 성공");
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestBody DeleteUserRequestDto deleteUserRequestDto) {
+        userService.deleteUser(userDetails.getUser(), deleteUserRequestDto);
+
+        return ResponseEntity.ok().body("회원 탈퇴 성공");
     }
 
 
