@@ -40,11 +40,9 @@ public class OrderService {
             if(!CheckStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
         }
         for(Long key:basket.keySet()){
-            Long price = productRepository.getReferenceById(key).getPrice();
-            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),price);
+            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productRepository.getReferenceById(key).getPrice(),productRepository.getReferenceById(key).getName());
             orderDetailRepository.save(orderDetail);
             updateStock(key,basket.get(key));
-
         }
 
     }
@@ -69,8 +67,7 @@ public class OrderService {
     }
 
     public boolean CheckStock(Long productId,Long quantity){
-        Long stock =productRepository.getReferenceById(productId).getStock();
-        return stock - quantity >= 0;
+        return productRepository.getReferenceById(productId).getStock() - quantity >= 0;
     }
 
 }
