@@ -36,4 +36,9 @@ public class Order extends TimeStamped {
     private User user;
 
 
+    public Order(User user){
+        this.user = user;
+
+    }
+
 }

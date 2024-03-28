@@ -1,4 +1,6 @@
-package org.example.tentrilliondollars.orderDetail;
+package org.example.tentrilliondollars.order.entity;
+
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -38,5 +40,11 @@ public class OrderDetail {
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
+    public OrderDetail(Order order,String product_name,Long quantity,Long price){
+        this.product_name = product_name;
+        this.quantity = quantity;
+        this.order = order;
+        this.price = price;
+    }
 
 }
