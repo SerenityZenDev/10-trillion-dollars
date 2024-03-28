@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class OrderAdminController {
 
     private final OrderAdminService orderAdminService;
-
     @Secured("ROLE_SELLER")
     @PutMapping("/order/{orderId}")
     public ResponseEntity<CommonResponseDto> updateOrderState(@RequestBody ChangeStateDto requestDto, @PathVariable Long orderId){
