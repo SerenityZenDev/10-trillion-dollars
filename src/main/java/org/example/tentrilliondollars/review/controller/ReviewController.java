@@ -28,25 +28,16 @@ public class ReviewController {
         @RequestBody ReviewRequest reviewRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-
         reviewService.createReview(productId, reviewRequest, userDetails.getUser().getId());
         return ResponseEntity.ok().body("후기가 등록 되었습니다.");
     }
     @GetMapping("/reviews")
     //리뷰 전체 조회
     public ResponseEntity<List<ReviewResponse>> getAllReviews(
+        @PathVariable Long productId
     ) {
-        List<ReviewResponse> responseList = reviewService.getAllReviews();
+        List<ReviewResponse> responseList = reviewService.getAllReviews(productId);
         return ResponseEntity.ok().body(responseList);
-    }
-    //리뷰 선택 조회
-    @GetMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponse> getReview(
-        @PathVariable Long productId,
-        @PathVariable Long reviewId
-    ) {
-        ReviewResponse reviewResponse = reviewService.getReview(reviewId,productId);
-        return ResponseEntity.ok().body(reviewResponse);
     }
     //리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")

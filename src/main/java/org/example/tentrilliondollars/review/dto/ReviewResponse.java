@@ -9,10 +9,12 @@ import org.example.tentrilliondollars.review.entity.Review;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResponse {
+    private Long id;
     private String content;
     private String photo;
     private Long score;
     public ReviewResponse(Review review){
+        this.id = review.getId();
         this.content = review.getContent();
         this.photo = review.getPhoto();
         this.score = review.getScore();
