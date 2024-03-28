@@ -26,9 +26,14 @@ public class Order extends TimeStamped {
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
-    public Order(User user,OrderState state){
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Address address;
+
+    public Order(User user,OrderState state,Address address){
         this.user = user;
         this.state = state;
+        this.address = address;
     }
 
     public void changeState(OrderState state){

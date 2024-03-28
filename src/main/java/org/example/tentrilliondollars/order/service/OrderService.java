@@ -1,6 +1,8 @@
 package org.example.tentrilliondollars.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.address.entity.Address;
+import org.example.tentrilliondollars.address.repository.AddressRepository;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
@@ -26,9 +28,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
 
-    public Order createOrder(UserDetailsImpl userDetails){
-        Order order = new Order(userDetails.getUser(),OrderState.PREPARING);
+    public Order createOrder(UserDetailsImpl userDetails,Long addressId){
+        Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
         return orderRepository.save(order);
     }
     @Transactional
