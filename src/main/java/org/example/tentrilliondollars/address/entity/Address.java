@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.tentrilliondollars.address.dto.AddressRequestDto;
 import org.example.tentrilliondollars.user.entity.User;
 
 
@@ -38,10 +39,20 @@ public class Address {
     @Column(nullable = false)
     private String province;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
+    public Address(AddressRequestDto requestDto, User user) {
+        this.city = requestDto.getCity();
+        this.village = requestDto.getVillage();
+        this.province = requestDto.getProvince();
+        this.user = user;
+    }
 
+    public void updateAddress(AddressRequestDto requestDto) {
+        this.city = requestDto.getCity();
+        this.village = requestDto.getVillage();
+        this.province = requestDto.getProvince();
+    }
 }

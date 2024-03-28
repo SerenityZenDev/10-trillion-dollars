@@ -1,8 +1,11 @@
 package org.example.tentrilliondollars.address.repository;
 
 import org.example.tentrilliondollars.address.entity.Address;
+import org.example.tentrilliondollars.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AddressRepository extends JpaRepository<Address, Long> {
+import java.util.List;
 
+public interface AddressRepository extends JpaRepository<Address, Long> {
+    List<Address> findAllByUser(User user);
 }
