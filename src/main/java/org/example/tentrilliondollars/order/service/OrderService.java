@@ -1,9 +1,9 @@
 package org.example.tentrilliondollars.order.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.repository.AddressRepository;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
+import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
@@ -12,11 +12,9 @@ import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,9 +44,9 @@ public class OrderService {
         }
 
     }
-    public List<OrderResponseDto> getOrderDetailList(Long orderId){
+    public List<OrderDetailResponseDto> getOrderDetailList(Long orderId){
         List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(orderRepository.getReferenceById(orderId));
-        return listOfOrderedProducts.stream().map(OrderResponseDto::new).toList();
+        return listOfOrderedProducts.stream().map(OrderDetailResponseDto::new).toList();
     }
     @Transactional
     public void deleteOrder(Long orderId){
@@ -68,6 +66,11 @@ public class OrderService {
 
     public boolean CheckStock(Long productId,Long quantity){
         return productRepository.getReferenceById(productId).getStock() - quantity >= 0;
+    }
+
+    public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails){
+        List<Order> orderList = orderRepository.findOrdersByUser(userDetails.getUser());
+        return orderList.stream().map(OrderResponseDto::new).toList();
     }
 
 }

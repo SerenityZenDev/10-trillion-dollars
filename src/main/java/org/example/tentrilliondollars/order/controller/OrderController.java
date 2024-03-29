@@ -5,17 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.CommonResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderRequestDto;
+import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
-import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -33,11 +31,15 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrder(@PathVariable Long orderId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<List<OrderDetailResponseDto>> getOrder(@PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         if(orderService.checkUser(userDetails,orderId)){
              return ResponseEntity.status(200).body(orderService.getOrderDetailList(orderId));}
         throw new RuntimeException("접속 권한 없음");
     }
+    @GetMapping("/UserOrder")
+    public ResponseEntity<List<OrderResponseDto>> getUserOrder(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.status(200).body(orderService.getOrderList(userDetails));}
+
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<CommonResponseDto> cancelOrder(@PathVariable Long orderId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
