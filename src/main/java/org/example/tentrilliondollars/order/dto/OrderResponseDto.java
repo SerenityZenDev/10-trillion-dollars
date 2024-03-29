@@ -20,6 +20,6 @@ public class OrderResponseDto {
     public OrderResponseDto(Order order){
        this.orderId = order.getId();
        this.state = order.getState();
-       this.address = order.getAddress().getCity()+" "+ order.getAddress().getProvince()+" "+order.getAddress().getVillage();
+       this.address = order.getAddress().getCity()+" "+order.getAddress().getVillage()+" "+ order.getAddress().getProvince();
     }
 }
