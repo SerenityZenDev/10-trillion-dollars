@@ -36,7 +36,7 @@ public class OrderController {
              return ResponseEntity.status(200).body(orderService.getOrderDetailList(orderId));}
         throw new RuntimeException("접속 권한 없음");
     }
-    @GetMapping("/UserOrder")
+    @GetMapping("/userorder")
     public ResponseEntity<List<OrderResponseDto>> getUserOrder(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.status(200).body(orderService.getOrderList(userDetails));}
 
