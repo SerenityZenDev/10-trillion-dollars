@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangeStateDto {
+public class StateRequestDto {
     private int stateNum;
 }

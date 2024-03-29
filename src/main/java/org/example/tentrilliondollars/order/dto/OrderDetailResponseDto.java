@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
 
@@ -12,12 +11,18 @@ import org.example.tentrilliondollars.order.entity.OrderState;
 @Setter
 @AllArgsConstructor
 @ToString
-public class OrderResponseDto {
+public class OrderDetailResponseDto {
     private Long productId;
+    private Long quantity;
     private OrderState state;
+    private String productName;
 
-    public OrderResponseDto(Order order){
-       this.productId = order.getId();
-       this.state = order.getState();
+
+    public OrderDetailResponseDto(OrderDetail orderDetail){
+        this.productId = orderDetail.getProductId();
+        this.quantity = orderDetail.getQuantity();
+        this.state = orderDetail.getOrder().getState();
+        this.productName = orderDetail.getProductName();
     }
+
 }
