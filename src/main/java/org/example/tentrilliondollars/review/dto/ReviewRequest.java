@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ReviewRequest {
     private String content;
     private String photo;
-    private Long score;
+    private int score;
 }

@@ -11,8 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.tentrilliondollars.global.TimeStamped;
@@ -33,9 +31,7 @@ public class Review extends TimeStamped {
     @Column
     private String photo;
     @Column
-    @Min(1)
-    @Max(5)
-    private Long score;
+    private int score;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -52,7 +48,7 @@ public class Review extends TimeStamped {
         this.product = product;
         this.user = user;
     }
-    public void UpdateReview(ReviewRequest reviewRequest) {
+    public void updateReview(ReviewRequest reviewRequest) {
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
