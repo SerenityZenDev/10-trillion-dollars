@@ -2,6 +2,7 @@ package org.example.tentrilliondollars.user.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.user.dto.DeleteUserRequestDto;
 import org.example.tentrilliondollars.user.dto.LoginRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyPasswordRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyUserNameRequestDto;
@@ -92,5 +93,20 @@ public class UserService {
             modifyPasswordRequestDto.getChangePasswordCheck());
 
         changePasswordUser.modifyPassword(changedPassword);
+    }
+
+    public void deleteUser(User user, DeleteUserRequestDto deleteUserRequestDto) {
+        User deleteUser = userRepository.findById(user.getId()).orElseThrow();
+
+        if (!deleteUserRequestDto.getPassword().equals(deleteUserRequestDto.getPasswordCheck())) {
+            throw new IllegalArgumentException("비밀번호");
+        }
+
+        if (!passwordEncoder.matches(deleteUserRequestDto.getPassword(),
+            deleteUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        userRepository.deleteById(user.getId());
     }
 }
