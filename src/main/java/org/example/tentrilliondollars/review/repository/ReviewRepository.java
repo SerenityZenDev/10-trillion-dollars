@@ -1,7 +1,6 @@
 package org.example.tentrilliondollars.review.repository;
 
 import java.util.List;
-import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -12,7 +12,7 @@ public class ReviewResponse {
     private Long id;
     private String content;
     private String photo;
-    private Long score;
+    private int score;
     public ReviewResponse(Review review){
         this.id = review.getId();
         this.content = review.getContent();
