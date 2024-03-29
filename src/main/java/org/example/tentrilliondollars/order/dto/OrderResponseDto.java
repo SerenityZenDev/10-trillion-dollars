@@ -13,11 +13,13 @@ import org.example.tentrilliondollars.order.entity.OrderState;
 @AllArgsConstructor
 @ToString
 public class OrderResponseDto {
-    private Long productId;
+    private Long orderId;
     private OrderState state;
+    private String address;
 
     public OrderResponseDto(Order order){
-       this.productId = order.getId();
+       this.orderId = order.getId();
        this.state = order.getState();
+       this.address = order.getAddress().getCity()+" "+ order.getAddress().getProvince()+" "+order.getAddress().getVillage();
     }
 }
