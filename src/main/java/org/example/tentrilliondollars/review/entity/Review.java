@@ -41,18 +41,22 @@ public class Review extends TimeStamped {
     private Product product;
 
 
-    public Review(ReviewRequest reviewRequest,Product product,User user){
+    public Review(
+        ReviewRequest reviewRequest,
+        Product product,
+        User user
+    ){
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
         this.product = product;
         this.user = user;
     }
-    public void updateReview(ReviewRequest reviewRequest) {
+    public void updateReview(
+        ReviewRequest reviewRequest
+    ) {
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
     }
-
-
 }
