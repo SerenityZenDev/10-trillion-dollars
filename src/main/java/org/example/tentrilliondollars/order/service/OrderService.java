@@ -28,15 +28,13 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final AddressRepository addressRepository;
 
-    public Order createOrder(UserDetailsImpl userDetails,Long addressId){
-        Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
-        return orderRepository.save(order);
-    }
     @Transactional
-    public void saveOrderDetails(Map<Long,Long> basket,Order order) throws Exception {
+    public void CreateOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
         for(Long key:basket.keySet()){
             if(!CheckStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
         }
+        Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
+        orderRepository.save(order);
         for(Long key:basket.keySet()){
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productRepository.getReferenceById(key).getPrice(),productRepository.getReferenceById(key).getName());
             orderDetailRepository.save(orderDetail);

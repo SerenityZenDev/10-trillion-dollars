@@ -25,8 +25,7 @@ public class OrderController {
 
     @PostMapping("")
     public ResponseEntity<CommonResponseDto> makeOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-       Order order =orderService.createOrder(userDetails,requestDto.getAddressId());
-       orderService.saveOrderDetails(requestDto.getBasket(),order);
+        orderService.CreateOrder(requestDto.getBasket(),userDetails, requestDto.getAddressId());
        return ResponseEntity.status(200).body(new CommonResponseDto(200,"주문이 완료됐습니다."));
     }
 
