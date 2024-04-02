@@ -18,10 +18,10 @@ public class KakaoPayController {
 
 
     @GetMapping("/ready/{orderId}")
-    public ResponseEntity<?> getRedirectUrl(@RequestBody PayInfoDto payInfoDto, @PathVariable Long orderId) throws Exception {
+    public ResponseEntity<?> getRedirectUrl(@PathVariable Long orderId) throws Exception {
 
            return ResponseEntity.status(HttpStatus.OK)
-                    .body(kakaoPayService.getRedirectUrl(payInfoDto,orderId));
+                    .body(kakaoPayService.getRedirectUrl(orderId));
 
 
     }

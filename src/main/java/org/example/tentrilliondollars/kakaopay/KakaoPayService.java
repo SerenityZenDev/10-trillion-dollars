@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
+import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,13 +33,14 @@ public class KakaoPayService {
 
 
     @Transactional
-    public PayReadyResDto getRedirectUrl(PayInfoDto payInfoDto, Long orderId)throws Exception{
+    public PayReadyResDto getRedirectUrl(Long orderId)throws Exception{
 
         HttpHeaders headers=new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
-        PayRequest payRequest=makePayRequest.getReadyRequest(payInfoDto);
+
+        PayRequest payRequest=makePayRequest.getReadyRequest(createPayInfo(orderId));
         HttpEntity<MultiValueMap<String, String>> urlRequest = new HttpEntity<>(payRequest.getMap(), headers);
         RestTemplate rt = new RestTemplate();
         PayReadyResDto payReadyResDto = rt.postForObject(payRequest.getUrl(), urlRequest, PayReadyResDto.class);
@@ -56,22 +58,26 @@ public class KakaoPayService {
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
 
-
         PayRequest payRequest=makePayRequest.getApproveRequest(tid,pgToken);
-
-
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(payRequest.getMap(), headers);
 
-        // 요청 보내기
         RestTemplate rt = new RestTemplate();
         PayApproveResDto payApproveResDto = rt.postForObject(payRequest.getUrl(), requestEntity, PayApproveResDto.class);
-
-
-
+        orderRepository.getReferenceById(orderId).changeState(OrderState.PREPARING);
         return payApproveResDto;
+    }
 
-
+    public PayInfoDto createPayInfo(Long orderId){
+        List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrder(orderRepository.getReferenceById(orderId));
+        Long totalPrice=0L;
+        for(OrderDetail orderDetail:ListofOrderDetail){
+            totalPrice+=orderDetail.getPrice()*orderDetail.getQuantity();
+        }
+        PayInfoDto payInfoDto = new PayInfoDto();
+        payInfoDto.setPrice(totalPrice);
+        payInfoDto.setItemName("TenCompany");
+        return payInfoDto;
     }
 
 

@@ -31,7 +31,7 @@ public class OrderService {
     @Transactional
     public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
         checkBasket(basket);
-        Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
+        Order order = new Order(userDetails.getUser(),OrderState.NOTPAYED,addressRepository.getReferenceById(addressId));
         orderRepository.save(order);
         for(Long key:basket.keySet()){
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productRepository.getReferenceById(key).getPrice(),productRepository.getReferenceById(key).getName());
