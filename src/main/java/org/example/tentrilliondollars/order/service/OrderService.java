@@ -30,9 +30,7 @@ public class OrderService {
 
     @Transactional
     public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
-        for(Long key:basket.keySet()){
-            if(!checkStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
-        }
+        checkBasket(basket);
         Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
         orderRepository.save(order);
         for(Long key:basket.keySet()){
@@ -69,6 +67,12 @@ public class OrderService {
     public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails){
         List<Order> orderList = orderRepository.findOrdersByUser(userDetails.getUser());
         return orderList.stream().map(OrderResponseDto::new).toList();
+    }
+
+    public void checkBasket(Map<Long,Long> basket) throws Exception {
+        for(Long key:basket.keySet()){
+            if(!checkStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
+        }
     }
 
 }
