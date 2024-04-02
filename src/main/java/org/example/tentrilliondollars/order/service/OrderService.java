@@ -29,9 +29,9 @@ public class OrderService {
     private final AddressRepository addressRepository;
 
     @Transactional
-    public void CreateOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
+    public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
         for(Long key:basket.keySet()){
-            if(!CheckStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
+            if(!checkStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
         }
         Order order = new Order(userDetails.getUser(),OrderState.PREPARING,addressRepository.getReferenceById(addressId));
         orderRepository.save(order);
@@ -62,7 +62,7 @@ public class OrderService {
 
     }
 
-    public boolean CheckStock(Long productId,Long quantity){
+    public boolean checkStock(Long productId,Long quantity){
         return productRepository.getReferenceById(productId).getStock() - quantity >= 0;
     }
 
