@@ -7,6 +7,7 @@ import org.example.tentrilliondollars.user.dto.LoginRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyPasswordRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyUserNameRequestDto;
 import org.example.tentrilliondollars.user.dto.SignupRequestDto;
+import org.example.tentrilliondollars.user.dto.UserResponseDto;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.repository.UserRepository;
@@ -67,6 +68,12 @@ public class UserService {
 
         return user;
     }
+
+    public UserResponseDto showUser(User user) {
+        User showUser = userRepository.findById(user.getId()).orElseThrow();
+        return new UserResponseDto(showUser.getUsername(), showUser.getEmail(), showUser.getRole());
+    }
+
 
     @Transactional
     public void modifyUsername(User user, ModifyUserNameRequestDto modifyUserNameRequestDto) {
