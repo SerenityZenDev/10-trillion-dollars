@@ -13,7 +13,7 @@ public class MakePayRequest {
 
         map.add("cid","TC0ONETIME");
         map.add("partner_order_id","partner_order_id");
-        map.add("partner_user_id","본인의 서비스명");
+        map.add("partner_user_id","ten");
         map.add("item_name",payInfoDto.getItemName());
         map.add("quantity","1");
         map.add("total_amount",payInfoDto.getPrice()+"");
@@ -32,7 +32,7 @@ public class MakePayRequest {
         map.add("cid", "TC0ONETIME");
         map.add("tid", tid);
         map.add("partner_order_id", "partner_order_id");
-        map.add("partner_user_id", "본인의 서비스명");
+        map.add("partner_user_id", "ten");
         map.add("pg_token", pgToken);
 
         return new PayRequest("https://kapi.kakao.com/v1/payment/approve",map);

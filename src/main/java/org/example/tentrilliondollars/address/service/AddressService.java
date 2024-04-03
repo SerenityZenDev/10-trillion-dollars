@@ -49,7 +49,7 @@ public class AddressService {
         addressRepository.delete(address);
     }
 
-    private Address findOne(Long addressId) {
+    public Address findOne(Long addressId) {
         return addressRepository.findById(addressId)
                 .orElseThrow(() -> new IllegalArgumentException("주소를 찾을 수 없습니다."));
     }

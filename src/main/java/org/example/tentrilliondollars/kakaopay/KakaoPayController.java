@@ -37,8 +37,9 @@ public class KakaoPayController {
 
 
     }
-    @GetMapping("/cancel")
-    public ResponseEntity<?> cancel() {
+    @GetMapping("/cancel/{orderId}")
+    public ResponseEntity<?> cancel(@PathVariable Long orderId) throws Exception {
+
         return null;
     }
 
