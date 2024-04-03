@@ -49,7 +49,7 @@ public class ProductService {
             .description(productRequest.getDescription())
             .stock(productRequest.getStock())
             .photo(productRequest.getPhoto())
-            .user(user)
+            .userId(user.getId())
             .build();
 
         productRepository.save(product);
@@ -115,7 +115,7 @@ public class ProductService {
     }
 
     private void validateProductOwner(User user, Product product) {
-        if (!product.getUser().getId().equals(user.getId())) {
+        if (!product.getUserId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.");
         }
     }
