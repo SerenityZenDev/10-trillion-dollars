@@ -1,8 +1,9 @@
-package org.example.tentrilliondollars.kakaopay;
+package org.example.tentrilliondollars.kakaopay.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tentrilliondollars.kakaopay.*;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class KakaoPayService {
-    private final MakePayRequest makePayRequest;
+    private final MakeRequest makeRequest;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
 
@@ -37,7 +37,7 @@ public class KakaoPayService {
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
-        PayRequest payRequest=makePayRequest.getReadyRequest(createPayInfo(orderId));
+        PayRequest payRequest= makeRequest.getReadyRequest(createPayInfo(orderId));
         HttpEntity<MultiValueMap<String, String>> urlRequest = new HttpEntity<>(payRequest.getMap(), headers);
         RestTemplate rt = new RestTemplate();
         PayReadyResDto payReadyResDto = rt.postForObject(payRequest.getUrl(), urlRequest, PayReadyResDto.class);
@@ -46,7 +46,7 @@ public class KakaoPayService {
     }
 
     @Transactional
-    public PayApproveResDto getApprove(String pgToken,Long orderId)throws Exception{
+    public PayApproveResDto getApprove(String pgToken, Long orderId)throws Exception{
 
         String tid= orderRepository.getReferenceById(orderId).getKakaoTid();
 
@@ -55,7 +55,7 @@ public class KakaoPayService {
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
 
-        PayRequest payRequest=makePayRequest.getApproveRequest(tid,pgToken);
+        PayRequest payRequest= makeRequest.getApproveRequest(tid,pgToken);
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(payRequest.getMap(), headers);
 
@@ -73,7 +73,7 @@ public class KakaoPayService {
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
 
-        CancelRequest cancelRequest = makePayRequest.getCancelRequest(tid);
+        CancelRequest cancelRequest = makeRequest.getCancelRequest(tid);
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(cancelRequest.getMap(), headers);
         RestTemplate rt = new RestTemplate();

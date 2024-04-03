@@ -1,13 +1,15 @@
-package org.example.tentrilliondollars.kakaopay;
+package org.example.tentrilliondollars.kakaopay.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.kakaopay.CancelRequest;
+import org.example.tentrilliondollars.kakaopay.PayInfoDto;
+import org.example.tentrilliondollars.kakaopay.PayRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 @Component
 @RequiredArgsConstructor
-public class MakePayRequest {
+public class MakeRequest {
 
     public PayRequest getReadyRequest(PayInfoDto payInfoDto){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
