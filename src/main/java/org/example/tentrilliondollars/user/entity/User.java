@@ -32,6 +32,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = true)
+    private String tid;
+
     /**
      * todo : enum으로 변경
      */
@@ -61,4 +64,8 @@ public class User {
         this.password = password;
     }
 
+
+    public void updateTid(String tid) {
+        this.tid = tid;
+    }
 }
