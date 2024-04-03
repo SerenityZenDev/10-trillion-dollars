@@ -10,4 +10,6 @@ import lombok.ToString;
 public class CancelResDto {
     private String tid;
     private String status;
+    private Amount amount;
+    private String item_name;
 }

@@ -82,4 +82,13 @@ public class OrderService {
         return orderRepository.getById(orderId);
     }
 
+    public Long getTotalPrice(Long orderId){
+        List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrder(orderRepository.getReferenceById(orderId));
+        Long totalPrice=0L;
+        for(OrderDetail orderDetail:ListofOrderDetail){
+            totalPrice+=orderDetail.getPrice()*orderDetail.getQuantity();
+        }
+        return totalPrice;
+    }
+
 }

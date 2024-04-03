@@ -41,11 +41,11 @@ public class MakeRequest {
         return new PayRequest("https://kapi.kakao.com/v1/payment/approve",map);
     }
 
-    public CancelRequest getCancelRequest(String tid){
+    public CancelRequest getCancelRequest(String tid, Long price){
         LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("cid", "TC0ONETIME");
-        map.add("tid", "T60cff4165886da991a7");
-        map.add("cancel_amount", "29000");
+        map.add("tid", tid);
+        map.add("cancel_amount", price+"");
         map.add("cancel_tax_free_amount", "0");
         map.add("cancel_vat_amount", "0");
         return new CancelRequest("https://kapi.kakao.com/v1/payment/cancel",map);

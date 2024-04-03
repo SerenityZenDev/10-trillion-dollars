@@ -7,6 +7,7 @@ import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
+import org.example.tentrilliondollars.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,7 @@ import java.util.List;
 public class KakaoPayService {
     private final MakeRequest makeRequest;
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
+    private final OrderService orderService;
 
     @Value("${kakao.api.admin-key}")
     private String adminKey;
@@ -72,7 +73,7 @@ public class KakaoPayService {
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
 
-        CancelRequest cancelRequest = makeRequest.getCancelRequest(tid);
+        CancelRequest cancelRequest = makeRequest.getCancelRequest(tid,orderService.getTotalPrice(orderId));
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(cancelRequest.getMap(), headers);
         RestTemplate rt = new RestTemplate();
@@ -81,13 +82,8 @@ public class KakaoPayService {
     }
 
     public PayInfoDto createPayInfo(Long orderId){
-        List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrder(orderRepository.getReferenceById(orderId));
-        Long totalPrice=0L;
-        for(OrderDetail orderDetail:ListofOrderDetail){
-            totalPrice+=orderDetail.getPrice()*orderDetail.getQuantity();
-        }
         PayInfoDto payInfoDto = new PayInfoDto();
-        payInfoDto.setPrice(totalPrice);
+        payInfoDto.setPrice(orderService.getTotalPrice(orderId));
         payInfoDto.setItemName("TenCompany");
         return payInfoDto;
     }
