@@ -21,10 +21,8 @@ public class Order extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private OrderState state;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    @Column
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -32,8 +30,13 @@ public class Order extends TimeStamped {
 
     @Column
     private String KakaoTid;
+<<<<<<< HEAD
     public Order(User user,OrderState state,Address address){
         this.user = user;
+=======
+    public Order(Long userId,OrderState state,Address address){
+        this.userId = userId;
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
         this.state = state;
         this.address = address;
     }

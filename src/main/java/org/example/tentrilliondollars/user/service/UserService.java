@@ -7,6 +7,7 @@ import org.example.tentrilliondollars.user.dto.LoginRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyPasswordRequestDto;
 import org.example.tentrilliondollars.user.dto.ModifyUserNameRequestDto;
 import org.example.tentrilliondollars.user.dto.SignupRequestDto;
+import org.example.tentrilliondollars.user.dto.UserResponseDto;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.repository.UserRepository;
@@ -68,6 +69,12 @@ public class UserService {
         return user;
     }
 
+    public UserResponseDto showUser(User user) {
+        User showUser = userRepository.findById(user.getId()).orElseThrow();
+        return new UserResponseDto(showUser.getUsername(), showUser.getEmail(), showUser.getRole());
+    }
+
+
     @Transactional
     public void modifyUsername(User user, ModifyUserNameRequestDto modifyUserNameRequestDto) {
         User changeNameUser = userRepository.findById(user.getId()).orElseThrow();
@@ -109,6 +116,7 @@ public class UserService {
 
         userRepository.deleteById(user.getId());
     }
+<<<<<<< HEAD
     //테스트
     public void createMultipleUsers() {
         for (int i = 4; i <= 100; i++) {
@@ -133,4 +141,12 @@ public class UserService {
     }
 
 
+=======
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
+
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
 }

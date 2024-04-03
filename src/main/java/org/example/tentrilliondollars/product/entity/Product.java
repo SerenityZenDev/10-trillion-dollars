@@ -1,15 +1,10 @@
 package org.example.tentrilliondollars.product.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.example.tentrilliondollars.global.TimeStamped;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
-import org.example.tentrilliondollars.user.entity.User;
 
 @Getter
 @NoArgsConstructor
@@ -41,21 +35,24 @@ public class Product extends TimeStamped {
     private String photo;
     @Column
     private boolean state;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    @Column
+    private Long userId;
 
     @Builder
+<<<<<<< HEAD
     public Product(Long id,String name, Long price, String description, Long stock, String photo,
         User user) {
         this.id = id;
+=======
+    public Product(String name, Long price, String description, Long stock, String photo,
+        Long userId) {
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
         this.photo = photo;
-        this.user = user;
+        this.userId = userId;
         this.state = true;
     }
 
@@ -70,11 +67,11 @@ public class Product extends TimeStamped {
         this.stock = stockupdateRequest.getStock();
     }
 
-    public void delete(){
+    public void delete() {
         this.state = false;
     }
 
-    public void updateStockAfterOrder(Long quantity){
+    public void updateStockAfterOrder(Long quantity) {
         this.stock = stock - quantity;
     }
 

@@ -12,6 +12,7 @@ import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
+import org.example.tentrilliondollars.user.service.UserService;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,16 +24,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final UserService userService;
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByStateTrue(pageable);
         return getPageResponse(productPage);
     }
 
-    public ProductDetailResponse getProductDetail(Long productId) throws NotFoundException {
+    public ProductDetailResponse getProductDetail(Long productId){
         Product product = getProduct(productId);
         checkProductStateIsFalse(product);
-        return new ProductDetailResponse(product);
+        User user = userService.findById(product.getUserId());
+        return new ProductDetailResponse(product, user.getUsername());
     }
 
     public List<ProductResponse> getAllProductsBySearch(String search, Pageable pageable) {
@@ -49,20 +52,20 @@ public class ProductService {
             .description(productRequest.getDescription())
             .stock(productRequest.getStock())
             .photo(productRequest.getPhoto())
-            .user(user)
+            .userId(user.getId())
             .build();
 
         productRepository.save(product);
     }
 
     public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
-        Page<Product> productPage = productRepository.findAllByUserAndStateTrue(user, pageable);
+        Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
         return getPageResponse(productPage);
     }
 
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
-        throws NotFoundException {
+         {
         Product product = getProduct(productId);
 
         checkProductStateIsFalse(product);
@@ -102,7 +105,7 @@ public class ProductService {
         }
     }
 
-    public Product getProduct(Long productId) throws NotFoundException {
+    public Product getProduct(Long productId) {
         return productRepository.findById(productId).orElseThrow(
             () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
         );
@@ -115,7 +118,7 @@ public class ProductService {
     }
 
     private void validateProductOwner(User user, Product product) {
-        if (!product.getUser().getId().equals(user.getId())) {
+        if (!product.getUserId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.");
         }
     }

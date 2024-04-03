@@ -2,7 +2,11 @@ package org.example.tentrilliondollars.order.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.address.repository.AddressRepository;
+<<<<<<< HEAD
 import org.example.tentrilliondollars.global.config.RedisConfig;
+=======
+import org.example.tentrilliondollars.address.service.AddressService;
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
@@ -28,11 +32,16 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+<<<<<<< HEAD
     private final ProductRepository productRepository;
     private final AddressRepository addressRepository;
     private final RedisConfig redisConfig;
     private final StockService stockService;
     private final ProductService productService;
+=======
+    private final ProductService productService;
+    private final AddressService addressService;
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
 
     @Transactional
     public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
@@ -45,14 +54,20 @@ public class OrderService {
             updateStock(key,basket.get(key));
         }
     }
+<<<<<<< HEAD
 
     public List<OrderDetailResponseDto> getOrderDetailList(Long orderId) {
         List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(
             orderRepository.getReferenceById(orderId));
+=======
+    public List<OrderDetailResponseDto> getOrderDetailList(Long orderId){
+        List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(orderRepository.getById(orderId));
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
         return listOfOrderedProducts.stream().map(OrderDetailResponseDto::new).toList();
     }
 
     @Transactional
+<<<<<<< HEAD
     public void deleteOrder(Long orderId) {
         orderDetailRepository.deleteAll(orderDetailRepository.findOrderDetailsByOrder(
             orderRepository.getReferenceById(orderId)));
@@ -63,12 +78,24 @@ public class OrderService {
         return Objects.equals(userDetails.getUser().getId(),
             orderRepository.getReferenceById(orderId).getUser().getId());
     }
+=======
+    public void deleteOrder(Long orderId){
+        orderDetailRepository.deleteAll(orderDetailRepository.findOrderDetailsByOrder(orderRepository.getById(orderId)));
+        orderRepository.delete(orderRepository.getById(orderId));
+    }
+
+    public boolean checkUser(UserDetailsImpl userDetails,Long orderId){
+        return Objects.equals(userDetails.getUser().getId(), orderRepository.getById(orderId).getUserId());
+    }
+
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
     public void updateStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
         Product product =  productService.getProduct(productId);
         product.updateStockAfterOrder(quantity);
 
     }
 
+<<<<<<< HEAD
 
 
     public boolean checkStock(Long productId, Long quantity) {
@@ -88,4 +115,25 @@ public class OrderService {
         }
     }
 
+=======
+    public boolean checkStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
+        return productService.getProduct(productId).getStock() - quantity >= 0;
+    }
+
+    public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails){
+        List<Order> orderList = orderRepository.findOrdersByUserId(userDetails.getUser().getId());
+        return orderList.stream().map(OrderResponseDto::new).toList();
+    }
+
+    public void checkBasket(Map<Long,Long> basket) throws Exception {
+        for(Long key:basket.keySet()){
+            if(!checkStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
+        }
+    }
+
+    public Order getOrder(Long orderId){
+        return orderRepository.getById(orderId);
+    }
+
+>>>>>>> 20dc5fb3a612c6de6106daaaf742959efb167135
 }

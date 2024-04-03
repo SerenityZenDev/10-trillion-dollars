@@ -41,15 +41,14 @@ public class Address {
     @Column(nullable = false)
     private String province;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    @Column
+    private Long userId;
 
-    public Address(AddressRequestDto requestDto, User user) {
+    public Address(AddressRequestDto requestDto, Long userId) {
         this.city = requestDto.getCity();
         this.village = requestDto.getVillage();
         this.province = requestDto.getProvince();
-        this.user = user;
+        this.userId = userId;
     }
 
     public void updateAddress(AddressRequestDto requestDto) {
