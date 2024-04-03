@@ -1,12 +1,15 @@
 package org.example.tentrilliondollars.kakaopay;
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.kakaopay.CancelRequest;
+import org.example.tentrilliondollars.kakaopay.PayInfoDto;
+import org.example.tentrilliondollars.kakaopay.PayRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
 @Component
 @RequiredArgsConstructor
-public class MakePayRequest {
+public class MakeRequest {
 
     public PayRequest getReadyRequest(PayInfoDto payInfoDto){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
@@ -36,5 +39,15 @@ public class MakePayRequest {
         map.add("pg_token", pgToken);
 
         return new PayRequest("https://kapi.kakao.com/v1/payment/approve",map);
+    }
+
+    public CancelRequest getCancelRequest(String tid){
+        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("cid", "TC0ONETIME");
+        map.add("tid", "T60cff4165886da991a7");
+        map.add("cancel_amount", "29000");
+        map.add("cancel_tax_free_amount", "0");
+        map.add("cancel_vat_amount", "0");
+        return new CancelRequest("https://kapi.kakao.com/v1/payment/cancel",map);
     }
 }
