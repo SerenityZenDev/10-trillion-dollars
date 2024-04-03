@@ -78,4 +78,8 @@ public class OrderService {
         }
     }
 
+    public Order getOrder(Long orderId){
+        return orderRepository.getById(orderId);
+    }
+
 }

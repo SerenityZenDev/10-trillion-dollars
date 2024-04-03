@@ -2,9 +2,6 @@
 package org.example.tentrilliondollars.kakaopay;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tentrilliondollars.kakaopay.KakaoPayService;
-import org.example.tentrilliondollars.kakaopay.PayApproveResDto;
-import org.example.tentrilliondollars.kakaopay.PayInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class KakaoPayController {
 
     private final KakaoPayService kakaoPayService;
+
+
 
 
     @GetMapping("/ready/{orderId}")
@@ -39,11 +38,10 @@ public class KakaoPayController {
     }
     @GetMapping("/cancel/{orderId}")
     public ResponseEntity<?> cancel(@PathVariable Long orderId) throws Exception {
-
-        return null;
+        CancelResDto cancelResDto = kakaoPayService.kakaoCancel(orderId);
+         return ResponseEntity.status(HttpStatus.OK)
+                 .body(cancelResDto);
     }
-
-
     @GetMapping("/fail")
     public ResponseEntity<?> fail() {
 
