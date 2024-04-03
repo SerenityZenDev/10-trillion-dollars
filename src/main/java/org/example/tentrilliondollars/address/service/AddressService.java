@@ -20,12 +20,12 @@ public class AddressService {
 
     public void createAddress(AddressRequestDto requestDto, User user) {
         User finduser = userService.findById(user.getId());
-        Address address = new Address(requestDto, finduser);
+        Address address = new Address(requestDto, finduser.getId());
         addressRepository.save(address);
     }
 
     public List<AddressResponseDto> getUserAllAddress(User user) {
-        return addressRepository.findAllByUser(user)
+        return addressRepository.findAllByUserId(user.getId())
                 .stream()
                 .map(AddressResponseDto::new).toList();
     }
@@ -33,7 +33,7 @@ public class AddressService {
     public void updateAddress(Long addressId, AddressRequestDto requestDto, User user) {
         Address address = findOne(addressId);
 
-        if(!address.getUser().getId().equals(user.getId())) {
+        if(!address.getUserId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
         }
         address.updateAddress(requestDto);
@@ -43,7 +43,7 @@ public class AddressService {
     public void deleteAddress(Long addressId, User user) {
         Address address = findOne(addressId);
 
-        if(!address.getUser().getId().equals(user.getId())) {
+        if(!address.getUserId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 주소에 대한 권한이 없습니다.");
         }
         addressRepository.delete(address);
