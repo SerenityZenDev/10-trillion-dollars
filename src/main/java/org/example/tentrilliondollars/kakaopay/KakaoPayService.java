@@ -1,9 +1,8 @@
-package org.example.tentrilliondollars.kakaopay.service;
+package org.example.tentrilliondollars.kakaopay;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.tentrilliondollars.kakaopay.*;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;

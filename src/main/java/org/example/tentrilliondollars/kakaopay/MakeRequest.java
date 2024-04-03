@@ -1,4 +1,4 @@
-package org.example.tentrilliondollars.kakaopay.service;
+package org.example.tentrilliondollars.kakaopay;
 
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.kakaopay.CancelRequest;
