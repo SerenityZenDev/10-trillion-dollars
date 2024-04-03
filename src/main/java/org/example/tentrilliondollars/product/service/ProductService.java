@@ -102,7 +102,7 @@ public class ProductService {
         }
     }
 
-    public Product getProduct(Long productId) throws NotFoundException {
+    public Product getProduct(Long productId) {
         return productRepository.findById(productId).orElseThrow(
             () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
         );
