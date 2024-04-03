@@ -30,6 +30,8 @@ public class Order extends TimeStamped {
     @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Address address;
 
+    @Column
+    private String KakaoTid;
     public Order(User user,OrderState state,Address address){
         this.user = user;
         this.state = state;
@@ -38,6 +40,9 @@ public class Order extends TimeStamped {
 
     public void changeState(OrderState state){
         this.state = state;
+    }
+    public void updateTid(String tid){
+        this.KakaoTid=tid;
     }
 
 }

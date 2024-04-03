@@ -47,8 +47,9 @@ public class Product extends TimeStamped {
     private User user;
 
     @Builder
-    public Product(String name, Long price, String description, Long stock, String photo,
+    public Product(Long id,String name, Long price, String description, Long stock, String photo,
         User user) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
@@ -76,4 +77,5 @@ public class Product extends TimeStamped {
     public void updateStockAfterOrder(Long quantity){
         this.stock = stock - quantity;
     }
+
 }
