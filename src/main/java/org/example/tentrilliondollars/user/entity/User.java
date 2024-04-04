@@ -32,12 +32,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
-    private String tid;
-
-    /**
-     * todo : enum으로 변경
-     */
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
@@ -65,7 +59,5 @@ public class User {
     }
 
 
-    public void updateTid(String tid) {
-        this.tid = tid;
-    }
+
 }
