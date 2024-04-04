@@ -13,7 +13,6 @@ public class MakeRequest {
 
     public PayRequestDto getReadyRequest(PayInfoDto payInfoDto){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
-
         map.add("cid","TC0ONETIME");
         map.add("partner_order_id","partner_order_id");
         map.add("partner_user_id","ten");
@@ -24,20 +23,16 @@ public class MakeRequest {
         map.add("approval_url", "http://localhost:8080/payment/success"+"/"); // 성공 시 redirect url
         map.add("cancel_url", "http://localhost:8080/payment/cancel"); // 취소 시 redirect url
         map.add("fail_url", "http://localhost:8080/payment/fail"); // 실패 시 redirect url
-
         return new PayRequestDto("https://kapi.kakao.com/v1/payment/ready",map);
     }
 
     public PayRequestDto getApproveRequest(String tid, String pgToken){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
-
-
         map.add("cid", "TC0ONETIME");
         map.add("tid", tid);
         map.add("partner_order_id", "partner_order_id");
         map.add("partner_user_id", "ten");
         map.add("pg_token", pgToken);
-
         return new PayRequestDto("https://kapi.kakao.com/v1/payment/approve",map);
     }
 

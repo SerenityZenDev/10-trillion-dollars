@@ -1,6 +1,7 @@
 package org.example.tentrilliondollars.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.repository.AddressRepository;
 import org.example.tentrilliondollars.address.service.AddressService;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
@@ -18,6 +19,7 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +36,7 @@ public class OrderService {
     @Transactional
     public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
         checkBasket(basket);
-        Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressService.findOne(addressId));
+        Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressId);
         orderRepository.save(order);
         for(Long key:basket.keySet()){
             OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
@@ -57,19 +59,25 @@ public class OrderService {
         return Objects.equals(userDetails.getUser().getId(), orderRepository.getById(orderId).getUserId());
     }
 
-    public void updateStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
+    public void updateStock(Long productId,Long quantity){
         Product product =  productService.getProduct(productId);
         product.updateStockAfterOrder(quantity);
 
     }
 
-    public boolean checkStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
+    public boolean checkStock(Long productId,Long quantity){
         return productService.getProduct(productId).getStock() - quantity >= 0;
     }
 
     public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails){
         List<Order> orderList = orderRepository.findOrdersByUserId(userDetails.getUser().getId());
-        return orderList.stream().map(OrderResponseDto::new).toList();
+        List<OrderResponseDto> ResponseList= new ArrayList<OrderResponseDto>();
+        for(Order order:orderList){
+            Address address = addressService.findOne(order.getAddressId());
+            OrderResponseDto orderResponseDto = new OrderResponseDto(order,address);
+            ResponseList.add(orderResponseDto);
+        }
+        return ResponseList;
     }
 
     public void checkBasket(Map<Long,Long> basket) throws Exception {

@@ -24,16 +24,15 @@ public class Order extends TimeStamped {
     @Column
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Address address;
+    @Column
+    private Long addressId;
 
     @Column
     private String KakaoTid;
-    public Order(Long userId,OrderState state,Address address){
+    public Order(Long userId,OrderState state,Long addressId){
         this.userId = userId;
         this.state = state;
-        this.address = address;
+        this.addressId = addressId;
     }
 
     public void changeState(OrderState state){

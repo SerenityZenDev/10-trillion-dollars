@@ -30,11 +30,8 @@ public class KakaoPayService {
     @Value("${kakao.api.admin-key}")
     private String adminKey;
 
-
-
     @Transactional
     public PayReadyResDto getRedirectUrl(Long orderId)throws Exception{
-
         HttpHeaders headers=new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
@@ -49,34 +46,25 @@ public class KakaoPayService {
 
     @Transactional
     public PayApproveResDto getApprove(String pgToken, Long orderId)throws Exception{
-
         String tid= orderRepository.getReferenceById(orderId).getKakaoTid();
-
         HttpHeaders headers=new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
-
         PayRequestDto payRequestDto = makeRequest.getApproveRequest(tid,pgToken);
-
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(payRequestDto.getMap(), headers);
-
         RestTemplate rt = new RestTemplate();
         PayApproveResDto payApproveResDto = rt.postForObject(payRequestDto.getUrl(), requestEntity, PayApproveResDto.class);
         orderRepository.getReferenceById(orderId).changeState(OrderState.PREPARING);
         return payApproveResDto;
     }
     public CancelResDto kakaoCancel(Long orderId){
-
         String tid= orderRepository.getReferenceById(orderId).getKakaoTid();
-
         HttpHeaders headers=new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization",auth);
-
         CancelRequestDto cancelRequestDto = makeRequest.getCancelRequest(tid,orderService.getTotalPrice(orderId));
-
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(cancelRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
          CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(),requestEntity,CancelResDto.class);
