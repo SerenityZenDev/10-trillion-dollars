@@ -1,4 +1,4 @@
-package org.example.tentrilliondollars.kakaopay;
+package org.example.tentrilliondollars.kakaopay.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,4 +10,6 @@ import lombok.ToString;
 public class CancelResDto {
     private String tid;
     private String status;
+    private Amount amount;
+    private String item_name;
 }

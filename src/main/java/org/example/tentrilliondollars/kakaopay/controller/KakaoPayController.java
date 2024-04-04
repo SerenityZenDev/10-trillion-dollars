@@ -2,9 +2,10 @@
 package org.example.tentrilliondollars.kakaopay.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tentrilliondollars.kakaopay.CancelResDto;
-import org.example.tentrilliondollars.kakaopay.KakaoPayService;
-import org.example.tentrilliondollars.kakaopay.PayApproveResDto;
+import org.example.tentrilliondollars.kakaopay.dto.response.CancelResDto;
+import org.example.tentrilliondollars.kakaopay.service.KakaoPayService;
+import org.example.tentrilliondollars.kakaopay.dto.response.PayApproveResDto;
+import org.example.tentrilliondollars.order.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class KakaoPayController {
 
     private final KakaoPayService kakaoPayService;
-
+    private final OrderService orderService;
     @GetMapping("/ready/{orderId}")
     public ResponseEntity<?> getRedirectUrl(@PathVariable Long orderId) throws Exception {
 
@@ -39,6 +40,7 @@ public class KakaoPayController {
     @GetMapping("/cancel/{orderId}")
     public ResponseEntity<?> cancel(@PathVariable Long orderId) throws Exception {
         CancelResDto cancelResDto = kakaoPayService.kakaoCancel(orderId);
+        orderService.deleteOrder(orderId);
          return ResponseEntity.status(HttpStatus.OK)
                  .body(cancelResDto);
     }
