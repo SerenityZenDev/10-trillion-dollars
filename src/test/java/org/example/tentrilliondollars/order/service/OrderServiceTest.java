@@ -44,7 +44,6 @@ public class OrderServiceTest {
         address = new Address(1L, "test", "test", "test", user.getId());
         basket.put(1L,1L);
         Mockito.when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-
         // productRepository.getReferenceById가 호출될 때 product 객체를 반환하도록 설정
         Mockito.when(productRepository.getReferenceById(1L)).thenReturn(product);
     }
