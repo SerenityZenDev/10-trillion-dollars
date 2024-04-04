@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
@@ -15,11 +16,11 @@ import org.example.tentrilliondollars.order.entity.OrderState;
 public class OrderResponseDto {
     private Long orderId;
     private OrderState state;
-    private String address;
+    private String fullAddress;
 
-    public OrderResponseDto(Order order){
+    public OrderResponseDto(Order order, Address address){
        this.orderId = order.getId();
        this.state = order.getState();
-       this.address = order.getAddress().getCity()+" "+order.getAddress().getVillage()+" "+ order.getAddress().getProvince();
+       this.fullAddress = address.getCity()+" "+address.getVillage()+" "+address.getProvince();
     }
 }
