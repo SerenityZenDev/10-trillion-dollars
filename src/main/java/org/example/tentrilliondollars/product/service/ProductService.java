@@ -102,7 +102,7 @@ public class ProductService {
         product.delete();
     }
 
-    private void checkProductStateIsFalse(Product product) {
+    public void checkProductStateIsFalse(Product product) {
         if (!product.isState()){
             throw new IllegalArgumentException("해당 상품은 삭제되었습니다.");
         }

@@ -30,7 +30,7 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductService productService;
     private final AddressService addressService;
-    private final RedissonClient redissonClient;
+
 
 
 
@@ -80,9 +80,8 @@ public class OrderService {
             if(!checkStock(key,basket.get(key))){throw new Exception("id:"+key+" 수량부족");}
         }
     }
-
-    public Order getOrder(Long orderId){
-        return orderRepository.getById(orderId);
+    //reviewService에서 주문 검증하는 메서드
+    public long countByUserIdAndProductId(Long userId, Long productId) {
+        return orderDetailRepository.countByUserIdAndProductId(userId, productId);
     }
-
 }

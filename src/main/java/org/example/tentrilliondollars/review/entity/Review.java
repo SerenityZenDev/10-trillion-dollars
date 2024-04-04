@@ -36,20 +36,19 @@ public class Review extends TimeStamped {
     @Column
     Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "prodcut_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Product product;
+    @Column
+    Long productId;
 
 
     public Review(
         ReviewRequest reviewRequest,
-        Product product,
+        Long productId,
         Long userId
     ){
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
-        this.product = product;
+        this.productId = productId;
         this.userId = userId;
     }
     public void updateReview(
