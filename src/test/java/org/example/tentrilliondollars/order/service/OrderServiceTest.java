@@ -1,7 +1,5 @@
 package org.example.tentrilliondollars.order.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +36,7 @@ class OrderServiceTest {
         void set() {
             user = new User(1L, "tester", "test@test.com", UserRoleEnum.USER);
             userDetails = new UserDetailsImpl(user);
-            product = new Product(1L,"test",1000L,"test",1000L,"photo",user.getId());
+            //product = new Product(1L,"test",1000L,"test",1000L,"photo",user.getId());
             productRepository.save(product);
             address = new Address(1L, "test", "test", "test", user.getId());
             basket.put(1L,2L);
@@ -59,4 +57,27 @@ class OrderServiceTest {
             });
         }
     }
-    
+
+
+
+//    public void createMultipleUsers() {
+//        for (int i = 1; i <= 100; i++) {
+//            String username = "user" + i;
+//            String email = "user" + i + "@example.com";
+//            String password = "Test1234!"; // 예시 비밀번호, 실제로는 각 사용자별로 고유한 비밀번호를 설정해야 함
+//
+//            // 비밀번호 암호화
+//            String encodedPassword = passwordEncoder.encode(password);
+//
+//            // 사용자 역할 설정 (예시에서는 모든 사용자를 일반 사용자로 설정)
+//            UserRoleEnum role = UserRoleEnum.USER;
+//
+//            // 사용자 생성 및 저장
+//            userRepository.save(User.builder()
+//                .email(email)
+//                .username(username)
+//                .password(encodedPassword)
+//                .role(role)
+//                .build());
+//        }
+//    }

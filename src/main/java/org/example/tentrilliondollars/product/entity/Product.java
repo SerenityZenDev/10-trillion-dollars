@@ -42,9 +42,8 @@ public class Product extends TimeStamped {
     private Long userId;
 
     @Builder
-    public Product(Long id,String name, Long price, String description, Long stock, String photo,
+    public Product(String name, Long price, String description, Long stock, String photo,
         Long userId) {
-        this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
