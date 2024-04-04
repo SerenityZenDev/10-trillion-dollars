@@ -117,9 +117,33 @@ public class UserService {
         userRepository.deleteById(user.getId());
     }
 
+    //테스트
+    public void createMultipleUsers() {
+        for (int i = 1; i <= 100; i++) {
+            String username = "user" + i;
+            String email = "user" + i + "@example.com";
+            String password = "Test1234!"; // 예시 비밀번호, 실제로는 각 사용자별로 고유한 비밀번호를 설정해야 함
+
+            // 비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(password);
+
+            // 사용자 역할 설정 (예시에서는 모든 사용자를 일반 사용자로 설정)
+            UserRoleEnum role = UserRoleEnum.USER;
+
+            // 사용자 생성 및 저장
+            userRepository.save(User.builder()
+                .email(email)
+                .username(username)
+                .password(encodedPassword)
+                .role(role)
+                .build());
+        }
+    }
+
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
+
 
 }

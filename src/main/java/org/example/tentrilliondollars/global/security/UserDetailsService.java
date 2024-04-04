@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsService {
-
-
     public UserDetails getUser(Long userId, String username, String email, UserRoleEnum role)
         throws UsernameNotFoundException {
         User user = new User(userId, username, email, role);

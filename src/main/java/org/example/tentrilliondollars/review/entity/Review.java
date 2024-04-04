@@ -33,26 +33,29 @@ public class Review extends TimeStamped {
     @Column
     private int score;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "prodcut_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Product product;
+    @Column
+    Long userId;
+
+    @Column
+    Long productId;
 
 
-    public Review(ReviewRequest reviewRequest,Product product,User user){
+    public Review(
+        ReviewRequest reviewRequest,
+        Long productId,
+        Long userId
+    ){
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
-        this.product = product;
-        this.user = user;
+        this.productId = productId;
+        this.userId = userId;
     }
-    public void updateReview(ReviewRequest reviewRequest) {
+    public void updateReview(
+        ReviewRequest reviewRequest
+    ) {
         this.content = reviewRequest.getContent();
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
     }
-
-
 }

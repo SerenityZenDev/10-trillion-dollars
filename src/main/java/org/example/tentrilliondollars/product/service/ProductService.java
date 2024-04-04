@@ -1,6 +1,7 @@
 package org.example.tentrilliondollars.product.service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
@@ -13,6 +14,8 @@ import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.service.UserService;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +68,7 @@ public class ProductService {
 
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
-         {
+    {
         Product product = getProduct(productId);
 
         checkProductStateIsFalse(product);
@@ -99,7 +102,7 @@ public class ProductService {
         product.delete();
     }
 
-    private void checkProductStateIsFalse(Product product) {
+    public void checkProductStateIsFalse(Product product) {
         if (!product.isState()){
             throw new IllegalArgumentException("해당 상품은 삭제되었습니다.");
         }
@@ -130,4 +133,3 @@ public class ProductService {
     }
 
 }
-

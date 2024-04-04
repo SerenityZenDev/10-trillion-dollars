@@ -67,8 +67,8 @@ public class KakaoPayService {
         CancelRequestDto cancelRequestDto = makeRequest.getCancelRequest(tid,orderService.getTotalPrice(orderId));
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(cancelRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
-         CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(),requestEntity,CancelResDto.class);
-         return cancelResDto;
+        CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(),requestEntity,CancelResDto.class);
+        return cancelResDto;
     }
 
     public PayInfoDto createPayInfo(Long orderId){
