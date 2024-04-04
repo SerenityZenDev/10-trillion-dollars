@@ -1,9 +1,9 @@
-package org.example.tentrilliondollars.kakaopay;
+package org.example.tentrilliondollars.kakaopay.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tentrilliondollars.kakaopay.CancelRequest;
-import org.example.tentrilliondollars.kakaopay.PayInfoDto;
-import org.example.tentrilliondollars.kakaopay.PayRequest;
+import org.example.tentrilliondollars.kakaopay.dto.request.CancelRequestDto;
+import org.example.tentrilliondollars.kakaopay.dto.request.PayInfoDto;
+import org.example.tentrilliondollars.kakaopay.dto.request.PayRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -11,7 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 @RequiredArgsConstructor
 public class MakeRequest {
 
-    public PayRequest getReadyRequest(PayInfoDto payInfoDto){
+    public PayRequestDto getReadyRequest(PayInfoDto payInfoDto){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
 
         map.add("cid","TC0ONETIME");
@@ -25,10 +25,10 @@ public class MakeRequest {
         map.add("cancel_url", "http://localhost:8080/payment/cancel"); // 취소 시 redirect url
         map.add("fail_url", "http://localhost:8080/payment/fail"); // 실패 시 redirect url
 
-        return new PayRequest("https://kapi.kakao.com/v1/payment/ready",map);
+        return new PayRequestDto("https://kapi.kakao.com/v1/payment/ready",map);
     }
 
-    public PayRequest getApproveRequest(String tid,String pgToken){
+    public PayRequestDto getApproveRequest(String tid, String pgToken){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
 
 
@@ -38,16 +38,16 @@ public class MakeRequest {
         map.add("partner_user_id", "ten");
         map.add("pg_token", pgToken);
 
-        return new PayRequest("https://kapi.kakao.com/v1/payment/approve",map);
+        return new PayRequestDto("https://kapi.kakao.com/v1/payment/approve",map);
     }
 
-    public CancelRequest getCancelRequest(String tid, Long price){
+    public CancelRequestDto getCancelRequest(String tid, Long price){
         LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("cid", "TC0ONETIME");
         map.add("tid", tid);
         map.add("cancel_amount", price+"");
         map.add("cancel_tax_free_amount", "0");
         map.add("cancel_vat_amount", "0");
-        return new CancelRequest("https://kapi.kakao.com/v1/payment/cancel",map);
+        return new CancelRequestDto("https://kapi.kakao.com/v1/payment/cancel",map);
     }
 }

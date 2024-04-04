@@ -1,4 +1,4 @@
-package org.example.tentrilliondollars.kakaopay;
+package org.example.tentrilliondollars.kakaopay.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

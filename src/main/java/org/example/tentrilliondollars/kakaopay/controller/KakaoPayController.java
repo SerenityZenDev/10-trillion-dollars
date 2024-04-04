@@ -2,9 +2,9 @@
 package org.example.tentrilliondollars.kakaopay.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tentrilliondollars.kakaopay.CancelResDto;
-import org.example.tentrilliondollars.kakaopay.KakaoPayService;
-import org.example.tentrilliondollars.kakaopay.PayApproveResDto;
+import org.example.tentrilliondollars.kakaopay.dto.response.CancelResDto;
+import org.example.tentrilliondollars.kakaopay.service.KakaoPayService;
+import org.example.tentrilliondollars.kakaopay.dto.response.PayApproveResDto;
 import org.example.tentrilliondollars.order.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
