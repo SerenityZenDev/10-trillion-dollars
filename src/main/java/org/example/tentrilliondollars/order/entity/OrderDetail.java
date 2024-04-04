@@ -15,7 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.tentrilliondollars.order.entity.Order;
 
 @Getter
 @NoArgsConstructor
