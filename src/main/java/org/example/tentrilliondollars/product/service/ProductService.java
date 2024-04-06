@@ -1,6 +1,8 @@
 package org.example.tentrilliondollars.product.service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
@@ -10,6 +12,7 @@ import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
+import org.example.tentrilliondollars.s3.S3Service;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.service.UserService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,9 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserService userService;
+    private final S3Service s3Service;
+
+
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByStateTrue(pageable);
@@ -128,6 +135,16 @@ public class ProductService {
             .map(ProductResponse::new)
             .collect(Collectors.toList());
     }
+
+    public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
+    s3Service.putObject(
+       "tenshop","product-images/%s/%s".formatted(productId,
+                    UUID.randomUUID().toString()),
+                    file.getBytes()
+
+    );
+    }//TODO: image id db에 저장
+
 
 }
 

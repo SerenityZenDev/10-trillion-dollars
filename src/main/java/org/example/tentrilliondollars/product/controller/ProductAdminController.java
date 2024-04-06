@@ -1,5 +1,6 @@
 package org.example.tentrilliondollars.product.controller;
 
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -93,4 +95,11 @@ public class ProductAdminController {
         return ResponseEntity.status(200)
             .body("Product delete successfully");
     }
+
+    @PostMapping("{productId}/image")
+    public void uploadProductImage(@PathVariable Long productId, @RequestParam("file") MultipartFile file) throws IOException {
+        productService.uploadProductImage(productId,file);
+
+    }
+
 }
