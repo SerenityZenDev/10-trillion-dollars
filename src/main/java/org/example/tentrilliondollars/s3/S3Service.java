@@ -46,16 +46,12 @@ public class S3Service {
                 .bucket(bucketName)
                 .key(key)
                 .build();
-
         byte[] bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
-
         String fileName = URLEncoder.encode(key, "UTF-8").replaceAll("\\+", "%20");
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         httpHeaders.setContentLength(bytes.length);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
-
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
 
     }

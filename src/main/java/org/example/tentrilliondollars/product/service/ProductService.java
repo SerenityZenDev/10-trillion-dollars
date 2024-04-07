@@ -19,6 +19,7 @@ import org.example.tentrilliondollars.s3.S3Service;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +39,8 @@ public class ProductService {
     private final UserService userService;
     private final S3Service s3Service;
 
-
+    @Value("${product.bucket.name}")
+    String bucketName;
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByStateTrue(pageable);
@@ -146,20 +148,16 @@ public class ProductService {
     public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
     String imageId =UUID.randomUUID().toString();
         s3Service.putObject(
-       "tenshop","product-images/%s/%s".formatted(productId,
+                bucketName,"product-images/%s/%s".formatted(productId,
                     imageId),
-                    file.getBytes()
-
-    );
+                    file.getBytes());
          Product product =getProduct(productId);
          product.updateImageId(imageId);
          productRepository.save(product);
-
     }
 
     public ResponseEntity<byte[]> getProductImage(Long productId) throws IOException {
       String ImageId = "product-images/1/"+getProduct(productId).getPhoto();
-      String bucketName ="tenshop";
      return s3Service.getProductImage(bucketName,ImageId);
     }
 
