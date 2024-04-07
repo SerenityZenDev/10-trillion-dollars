@@ -38,6 +38,7 @@ public class Product extends TimeStamped {
     @Column
     private Long userId;
 
+
     @Builder
     public Product(String name, Long price, String description, Long stock, String photo,
         Long userId) {
@@ -67,5 +68,9 @@ public class Product extends TimeStamped {
 
     public void updateStockAfterOrder(Long quantity) {
         this.stock = stock - quantity;
+    }
+
+    public void updateImageId(String imageId){
+        this.photo =imageId;
     }
 }

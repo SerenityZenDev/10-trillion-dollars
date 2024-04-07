@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
@@ -19,9 +22,13 @@ import org.example.tentrilliondollars.user.service.UserService;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @Service
 @RequiredArgsConstructor
@@ -137,13 +144,24 @@ public class ProductService {
     }
 
     public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
-    s3Service.putObject(
+    String imageId =UUID.randomUUID().toString();
+        s3Service.putObject(
        "tenshop","product-images/%s/%s".formatted(productId,
-                    UUID.randomUUID().toString()),
+                    imageId),
                     file.getBytes()
 
     );
-    }//TODO: image id db에 저장
+         Product product =getProduct(productId);
+         product.updateImageId(imageId);
+         productRepository.save(product);
+
+    }
+
+    public ResponseEntity<byte[]> getProductImage(Long productId) throws IOException {
+      String ImageId = "product-images/1/"+getProduct(productId).getPhoto();
+      String bucketName ="tenshop";
+     return s3Service.getProductImage(bucketName,ImageId);
+    }
 
 
 }
