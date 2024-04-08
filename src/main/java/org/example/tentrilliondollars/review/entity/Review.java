@@ -53,6 +53,8 @@ public class Review extends TimeStamped {
         this.photo = reviewRequest.getPhoto();
         this.score = reviewRequest.getScore();
     }
-
+    public void updateImageId(String imageId){
+        this.photo =imageId;
+    }
 
 }

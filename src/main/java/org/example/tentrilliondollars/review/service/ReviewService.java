@@ -1,7 +1,10 @@
 package org.example.tentrilliondollars.review.service;
 
 import jakarta.transaction.Transactional;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
@@ -11,10 +14,14 @@ import org.example.tentrilliondollars.review.dto.ReviewRequest;
 import org.example.tentrilliondollars.review.dto.ReviewResponse;
 import org.example.tentrilliondollars.review.entity.Review;
 import org.example.tentrilliondollars.review.repository.ReviewRepository;
+import org.example.tentrilliondollars.s3.S3Service;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -24,6 +31,11 @@ public class ReviewService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrderDetailRepository orderDetailRepository;
+
+    @Value("${review.bucket.name}")
+    String bucketName;
+
+    private final S3Service s3Service;
     //리뷰 생성
     public void createReview(
         Long productId,
@@ -113,5 +125,28 @@ public class ReviewService {
         long reviewCount = reviewRepository.countByUserIdAndProductId(userId, productId);
         return orderCount > reviewCount;
     }
+
+    public Review getReview(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(
+                () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+        );
+    }
+
+    public void uploadReviewImage(Long productId, MultipartFile file) throws IOException {
+        String imageId =UUID.randomUUID().toString();
+        s3Service.putObject(
+                bucketName,"review-images/%s/%s".formatted(productId,
+                        imageId),
+                file.getBytes());
+        Review review =getReview(productId);
+        review.updateImageId(imageId);
+       reviewRepository.save(review);
+    }
+
+    public ResponseEntity<byte[]> getReviewImage(Long productId) throws IOException {
+        String ImageId = "review-images/1/"+getReview(productId).getPhoto();
+        return s3Service.getProductImage(bucketName,ImageId);
+    }
+
 
 }

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -61,7 +62,6 @@ public class ProductService {
             .price(productRequest.getPrice())
             .description(productRequest.getDescription())
             .stock(productRequest.getStock())
-            .photo(productRequest.getPhoto())
             .userId(user.getId())
             .build();
 
