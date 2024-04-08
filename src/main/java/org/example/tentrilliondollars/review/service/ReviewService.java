@@ -133,19 +133,19 @@ public class ReviewService {
     }
 
     public void uploadReviewImage(Long productId, MultipartFile file) throws IOException {
-        String imageId =UUID.randomUUID().toString();
+        String imageKey =UUID.randomUUID().toString();
         s3Service.putObject(
                 bucketName,"review-images/%s/%s".formatted(productId,
-                        imageId),
+                        imageKey),
                 file.getBytes());
         Review review =getReview(productId);
-        review.updateImageId(imageId);
+        review.updateImageId(imageKey);
        reviewRepository.save(review);
     }
 
     public ResponseEntity<byte[]> getReviewImage(Long productId) throws IOException {
-        String ImageId = "review-images/1/"+getReview(productId).getPhoto();
-        return s3Service.getProductImage(bucketName,ImageId);
+        String imageKey = "review-images/1/"+getReview(productId).getImageKey();
+        return s3Service.getProductImage(bucketName,imageKey);
     }
 
 

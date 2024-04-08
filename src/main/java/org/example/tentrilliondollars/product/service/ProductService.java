@@ -140,19 +140,19 @@ public class ProductService {
     }
 
     public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
-    String imageId =UUID.randomUUID().toString();
+    String imageKey =UUID.randomUUID().toString();
         s3Service.putObject(
                 bucketName,"product-images/%s/%s".formatted(productId,
-                    imageId),
+                    imageKey),
                     file.getBytes());
          Product product =getProduct(productId);
-         product.updateImageId(imageId);
+         product.updateImageKey(imageKey);
          productRepository.save(product);
     }
 
     public ResponseEntity<byte[]> getProductImage(Long productId) throws IOException {
-      String ImageId = "product-images/1/"+getProduct(productId).getPhoto();
-     return s3Service.getProductImage(bucketName,ImageId);
+      String ImageKey = "product-images/1/"+getProduct(productId).getImageKey();
+     return s3Service.getProductImage(bucketName,ImageKey);
     }
 
 

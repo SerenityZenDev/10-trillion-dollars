@@ -32,7 +32,7 @@ public class Product extends TimeStamped {
     @Column
     private Long stock;
     @Column
-    private String photo;
+    private String imageKey;
     @Column
     private boolean state;
     @Column
@@ -40,13 +40,12 @@ public class Product extends TimeStamped {
 
 
     @Builder
-    public Product(String name, Long price, String description, Long stock, String photo,
+    public Product(String name, Long price, String description, Long stock,
         Long userId) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
-        this.photo = photo;
         this.userId = userId;
         this.state = true;
     }
@@ -55,7 +54,6 @@ public class Product extends TimeStamped {
         this.name = productRequest.getName();
         this.price = productRequest.getPrice();
         this.description = productRequest.getDescription();
-        this.photo = productRequest.getPhoto();
     }
 
     public void updateStock(StockUpdateRequest stockupdateRequest) {
@@ -70,7 +68,7 @@ public class Product extends TimeStamped {
         this.stock = stock - quantity;
     }
 
-    public void updateImageId(String imageId){
-        this.photo =imageId;
+    public void updateImageKey(String imageKey){
+        this.imageKey =imageKey;
     }
 }
