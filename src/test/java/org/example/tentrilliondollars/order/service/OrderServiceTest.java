@@ -50,14 +50,15 @@ class OrderServiceTest {
         Mockito.when(productRepository.getReferenceById(1L)).thenReturn(product);
     }
 
+    //테스트 코드
     @Test
     @DisplayName("병렬로 100번 실행하여 재고 업데이트 테스트")
     void test() {
         IntStream.range(0, 100).parallel().forEach(i -> {
             try {
-                // createOrder 메서드로부터 Order의 ID를 받아옵니다.
+                // createOrder 메서드로부터 Order의 ID를 받아온다
                 //Long orderId = orderService.createOrder(basket, userDetails, address.getId());
-                // 받아온 orderId를 kakaoPayService.getApprove 메서드에 전달합니다.
+                // 받아온 orderId를 kakaoPayService.getApprove 메서드에 전달
                 //kakaoPayService.getApprove(orderId); // 수정된 부분
             } catch (Exception e) {
                 throw new RuntimeException(e);
