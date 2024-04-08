@@ -19,51 +19,52 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+
 @SpringBootTest
 @TestPropertySource(locations = "classpath:test.properties")
 class OrderServiceTest {
-        @MockBean
-        private ProductRepository productRepository;
-        @Autowired
-        private OrderService orderService;
-        UserDetailsImpl userDetails;
-        @Autowired
-        KakaoPayService kakaoPayService;
-        User user;
-        Product product;
-        Address address;
-        Map<Long, Long> basket = new HashMap<>();
 
-        @BeforeEach
-            //public void createOrder(Map<Long, Long> basket, UserDetailsImpl userDetails, Long addressId)
-        void set() {
-            user = new User(1L, "tester", "test@test.com", UserRoleEnum.USER);
-            userDetails = new UserDetailsImpl(user);
-            //product = new Product(1L,"test",1000L,"test",1000L,"photo",user.getId());
-            productRepository.save(product);
-            address = new Address(1L, "test", "test", "test", user.getId());
-            basket.put(1L,2L);
-            Mockito.when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-            // productRepository.getReferenceById가 호출될 때 product 객체를 반환하도록 설정
-            Mockito.when(productRepository.getReferenceById(1L)).thenReturn(product);
-        }
+    @MockBean
+    private ProductRepository productRepository;
+    @Autowired
+    private OrderService orderService;
+    UserDetailsImpl userDetails;
+    @Autowired
+    KakaoPayService kakaoPayService;
+    User user;
+    Product product;
+    Address address;
+    Map<Long, Long> basket = new HashMap<>();
 
-        @Test
-        @DisplayName("병렬로 100번 실행하여 재고 업데이트 테스트")
-        void test(){
-            IntStream.range(0, 100).parallel().forEach(i -> {
-                try {
-//                    // createOrder 메서드로부터 Order의 ID를 받아옵니다.
-//                    Long orderId = orderService.createOrder(basket, userDetails, address.getId());
-                    // 받아온 orderId를 kakaoPayService.getApprove 메서드에 전달합니다.
-                    //kakaoPayService.getApprove(orderId); // 수정된 부분
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
+    @BeforeEach
+        //public void createOrder(Map<Long, Long> basket, UserDetailsImpl userDetails, Long addressId)
+    void set() {
+        user = new User(1L, "tester", "test@test.com", UserRoleEnum.USER);
+        userDetails = new UserDetailsImpl(user);
+        //product = new Product(1L,"test",1000L,"test",1000L,"photo",user.getId());
+        productRepository.save(product);
+        address = new Address(1L, "test", "test", "test", user.getId());
+        basket.put(1L, 2L);
+        Mockito.when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        // productRepository.getReferenceById가 호출될 때 product 객체를 반환하도록 설정
+        Mockito.when(productRepository.getReferenceById(1L)).thenReturn(product);
     }
 
+    @Test
+    @DisplayName("병렬로 100번 실행하여 재고 업데이트 테스트")
+    void test() {
+        IntStream.range(0, 100).parallel().forEach(i -> {
+            try {
+                // createOrder 메서드로부터 Order의 ID를 받아옵니다.
+                //Long orderId = orderService.createOrder(basket, userDetails, address.getId());
+                // 받아온 orderId를 kakaoPayService.getApprove 메서드에 전달합니다.
+                //kakaoPayService.getApprove(orderId); // 수정된 부분
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+}
 
 
 //    public void createMultipleUsers() {
