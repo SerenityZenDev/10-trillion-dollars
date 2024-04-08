@@ -1,9 +1,13 @@
 package org.example.tentrilliondollars.order.service;
 
+import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.address.entity.Address;
-import org.example.tentrilliondollars.address.repository.AddressRepository;
 import org.example.tentrilliondollars.address.service.AddressService;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
@@ -14,18 +18,11 @@ import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
 import org.example.tentrilliondollars.product.entity.Product;
-import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,46 +32,65 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductService productService;
     private final AddressService addressService;
+    private final EntityManager entityManager;
     private final RedissonClient redissonClient;
 
-    //    @Transactional
-//    public void createOrder(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
-//        checkBasket(basket);
-//        Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressId);
-//        orderRepository.save(order);
-//        for(Long key:basket.keySet()){
-//            String lockKey = "product_lock:" + key;
-//            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
-//            orderDetailRepository.save(orderDetail);
-//            updateStock(key,basket.get(key));
-//        }
-//    }
+    //글로벌 예외에 추가해야함
+    public class InsufficientStockException extends RuntimeException {
+
+        public InsufficientStockException(String message) {
+            super(message);
+        }
+    }
+
     @Transactional
     public void createOrder(Map<Long, Long> basket, UserDetailsImpl userDetails, Long addressId)
         throws Exception {
         checkBasket(basket);
         Order order = new Order(userDetails.getUser().getId(), OrderState.NOTPAYED, addressId);
-        orderRepository.save(order);
-        for (Long key : basket.keySet()) {
-            String lockKey = "product_lock:" + key;
+        order = orderRepository.save(order); // 저장된 order 객체를 다시 할당하여 ID를 포함하도록 함
+
+        for (Long productId : basket.keySet()) {
+            String lockKey = "product_lock:" + productId;
             RLock lock = redissonClient.getLock(lockKey);
+
             try {
                 boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
                 if (!isLocked) {
                     throw new RuntimeException("락 획득에 실패했습니다.");
                 }
-                OrderDetail orderDetail = new OrderDetail(order, key, basket.get(key),
-                productService.getProduct(key).getPrice(),
-                productService.getProduct(key).getName());
+                Product product = productService.getProduct(productId);
+                if (product.getStock() < basket.get(productId)) {
+                    throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+                }
+                OrderDetail orderDetail = new OrderDetail(order, productId, basket.get(productId),
+                    product.getPrice(), product.getName());
                 orderDetailRepository.save(orderDetail);
-                updateStock(key, basket.get(key));
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 현재 스레드의 인터럽트 상태를 다시 설정
                 throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
             } finally {
-                lock.unlock();
+                if (lock.isLocked()) {
+                    lock.unlock();
+                }
             }
         }
     }
+
+    @Transactional
+    public void updateStockAndCreateOrderDetail(Long productId, Long quantity) {
+        entityManager.clear();
+        Product product = productService.getProduct(productId);
+        System.out.println(product.getStock());
+        Long stock = product.getStock();
+        // 재고 확인
+        if (quantity > stock) {
+            throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+        }
+        product.updateStockAfterOrder(quantity);
+        productService.save(product);
+    }
+
 
     public List<OrderDetailResponseDto> getOrderDetailList(Long orderId) {
         List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(
@@ -94,14 +110,13 @@ public class OrderService {
             orderRepository.getById(orderId).getUserId());
     }
 
-    public void updateStock(Long productId, Long quantity) {
-        Product product = productService.getProduct(productId);
-        product.updateStockAfterOrder(quantity);
-
-    }
 
     public boolean checkStock(Long productId, Long quantity) {
-        return productService.getProduct(productId).getStock() - quantity >= 0;
+        Long stock = productService.getProduct(productId).getStock();
+        if (stock < 1) {
+            throw new RuntimeException();
+        }
+        return stock - quantity >= 0;
     }
 
     public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails) {

@@ -39,21 +39,13 @@ public class UserController {
         userService.signup(signupRequestDto);
         return ResponseEntity.ok().body("회원가입 성공");
     }
-    //testcode 작성용
-    @PostMapping("/signups")
-    public ResponseEntity<String> signups() {
-        userService.createMultipleUsers();
-        return ResponseEntity.ok().body("회원가입 성공");
-    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto,
         HttpServletResponse response) {
         User loginedUser = userService.login(loginRequestDto);
-
         String token = jwtUtil.createToken(loginedUser.getId(), loginedUser.getEmail(),
             loginedUser.getUsername(), loginedUser.getRole());
-
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
 
@@ -96,9 +88,9 @@ public class UserController {
         return ResponseEntity.ok().body("회원 탈퇴 성공");
     }
 
-    @PostMapping("/create-multiple")
-    public ResponseEntity<String> createMultipleUsers() {
-        userService.createMultipleUsers();
-        return ResponseEntity.ok("Multiple users created successfully");
-    }
+//    @PostMapping("/create-multiple")
+//    public ResponseEntity<String> createMultipleUsers() {
+//        userService.createMultipleUsers();
+//        return ResponseEntity.ok("Multiple users created successfully");
+//    }
 }

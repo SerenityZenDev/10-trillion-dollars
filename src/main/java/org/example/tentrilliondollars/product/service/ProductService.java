@@ -60,6 +60,9 @@ public class ProductService {
 
         productRepository.save(product);
     }
+    public void save(Product product){
+        productRepository.save(product);
+    }
 
     public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
