@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import javax.swing.text.html.parser.Entity;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.service.AddressService;
@@ -33,25 +32,42 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductService productService;
     private final AddressService addressService;
-    private final RedissonClient redissonClient;
     private final EntityManager entityManager;
+    private final RedissonClient redissonClient;
 
+    //글로벌 예외에 추가해야함
+    public class InsufficientStockException extends RuntimeException {
 
+        public InsufficientStockException(String message) {
+            super(message);
+        }
+    }
+
+    @Transactional
     public void createOrder(Map<Long, Long> basket, UserDetailsImpl userDetails, Long addressId)
         throws Exception {
         checkBasket(basket);
         Order order = new Order(userDetails.getUser().getId(), OrderState.NOTPAYED, addressId);
-        orderRepository.save(order);
-        for (Long key : basket.keySet()) {
-            String lockKey = "product_lock:" + key;
+        order = orderRepository.save(order); // 저장된 order 객체를 다시 할당하여 ID를 포함하도록 함
+
+        for (Long productId : basket.keySet()) {
+            String lockKey = "product_lock:" + productId;
             RLock lock = redissonClient.getLock(lockKey);
+
             try {
                 boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
                 if (!isLocked) {
                     throw new RuntimeException("락 획득에 실패했습니다.");
                 }
-                updateStockAndCreateOrderDetail(key, basket.get(key), order, basket);
+                Product product = productService.getProduct(productId);
+                if (product.getStock() < basket.get(productId)) {
+                    throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+                }
+                OrderDetail orderDetail = new OrderDetail(order, productId, basket.get(productId),
+                    product.getPrice(), product.getName());
+                orderDetailRepository.save(orderDetail);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 현재 스레드의 인터럽트 상태를 다시 설정
                 throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
             } finally {
                 if (lock.isLocked()) {
@@ -60,18 +76,21 @@ public class OrderService {
             }
         }
     }
+
     @Transactional
-    public void updateStockAndCreateOrderDetail(Long productId, Long quantity, Order order, Map<Long, Long> basket) {
+    public void updateStockAndCreateOrderDetail(Long productId, Long quantity) {
         entityManager.clear();
         Product product = productService.getProduct(productId);
         System.out.println(product.getStock());
+        Long stock = product.getStock();
+        // 재고 확인
+        if (quantity > stock) {
+            throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+        }
         product.updateStockAfterOrder(quantity);
         productService.save(product);
-        OrderDetail orderDetail = new OrderDetail(order, productId, quantity,
-            product.getPrice(),
-            product.getName());
-        orderDetailRepository.save(orderDetail);
     }
+
 
     public List<OrderDetailResponseDto> getOrderDetailList(Long orderId) {
         List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(
@@ -92,9 +111,12 @@ public class OrderService {
     }
 
 
-
     public boolean checkStock(Long productId, Long quantity) {
-        return productService.getProduct(productId).getStock() - quantity >= 0;
+        Long stock = productService.getProduct(productId).getStock();
+        if (stock < 1) {
+            throw new RuntimeException();
+        }
+        return stock - quantity >= 0;
     }
 
     public List<OrderResponseDto> getOrderList(UserDetailsImpl userDetails) {

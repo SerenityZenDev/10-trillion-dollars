@@ -7,6 +7,7 @@ import org.example.tentrilliondollars.order.dto.CommonResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderRequestDto;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
+import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

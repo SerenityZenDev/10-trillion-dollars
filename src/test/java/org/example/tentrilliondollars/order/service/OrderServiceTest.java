@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
+import org.example.tentrilliondollars.kakaopay.service.KakaoPayService;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
 import org.example.tentrilliondollars.user.entity.User;
@@ -26,6 +27,8 @@ class OrderServiceTest {
         @Autowired
         private OrderService orderService;
         UserDetailsImpl userDetails;
+        @Autowired
+        KakaoPayService kakaoPayService;
         User user;
         Product product;
         Address address;
@@ -50,7 +53,10 @@ class OrderServiceTest {
         void test(){
             IntStream.range(0, 100).parallel().forEach(i -> {
                 try {
-                    orderService.createOrder(basket,userDetails,address.getId());
+//                    // createOrder 메서드로부터 Order의 ID를 받아옵니다.
+//                    Long orderId = orderService.createOrder(basket, userDetails, address.getId());
+                    // 받아온 orderId를 kakaoPayService.getApprove 메서드에 전달합니다.
+                    //kakaoPayService.getApprove(orderId); // 수정된 부분
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
