@@ -50,10 +50,8 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto,
         HttpServletResponse response) {
         User loginedUser = userService.login(loginRequestDto);
-
         String token = jwtUtil.createToken(loginedUser.getId(), loginedUser.getEmail(),
             loginedUser.getUsername(), loginedUser.getRole());
-
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
 
