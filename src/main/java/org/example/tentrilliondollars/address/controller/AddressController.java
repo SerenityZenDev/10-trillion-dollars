@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -39,7 +40,7 @@ public class AddressController {
     public ResponseEntity<String> updateAddress(
             @PathVariable Long addressId,
             @RequestBody AddressRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
         addressService.updateAddress(addressId, requestDto, userDetails.getUser());
 
         return ResponseEntity.ok("주소 수정 완료");
@@ -48,7 +49,7 @@ public class AddressController {
     @DeleteMapping("/{addressId}")
     public ResponseEntity<String> deleteAddress(
             @PathVariable Long addressId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
         addressService.deleteAddress(addressId, userDetails.getUser());
 
         return ResponseEntity.ok("주소 삭제 완료");
