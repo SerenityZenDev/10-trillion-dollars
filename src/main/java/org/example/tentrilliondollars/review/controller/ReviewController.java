@@ -62,8 +62,8 @@ public class ReviewController {
     }
 
     @PostMapping("reviews/{reviewId}/image")
-    public void uploadReviewImage(@PathVariable Long productId, @RequestParam("file") MultipartFile file) throws IOException {
-        reviewService.uploadReviewImage(productId,file);
+    public void uploadReviewImage(@PathVariable Long reviewId, @RequestParam("file") MultipartFile file) throws IOException {
+        reviewService.uploadReviewImage(reviewId,file);
     }
 
 
