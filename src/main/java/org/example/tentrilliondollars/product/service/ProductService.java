@@ -1,7 +1,9 @@
 package org.example.tentrilliondollars.product.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
@@ -11,16 +13,21 @@ import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.repository.ProductRepository;
+import org.example.tentrilliondollars.s3.S3Service;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.service.UserService;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +35,10 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserService userService;
+    private final S3Service s3Service;
+
+    @Value("${product.bucket.name}")
+    String bucketName;
 
     public List<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByStateTrue(pageable);
@@ -54,7 +65,6 @@ public class ProductService {
             .price(productRequest.getPrice())
             .description(productRequest.getDescription())
             .stock(productRequest.getStock())
-            .photo(productRequest.getPhoto())
             .userId(user.getId())
             .build();
 
@@ -134,5 +144,22 @@ public class ProductService {
             .map(ProductResponse::new)
             .collect(Collectors.toList());
     }
+
+    public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
+    String imageKey =UUID.randomUUID().toString();
+        s3Service.putObject(
+                bucketName,"product-images/%s/%s".formatted(productId,
+                    imageKey),
+                    file.getBytes());
+         Product product =getProduct(productId);
+         product.updateImageKey(imageKey);
+         productRepository.save(product);
+    }
+
+    public ResponseEntity<byte[]> getProductImage(Long productId) throws IOException {
+      String ImageKey = "product-images/1/"+getProduct(productId).getImageKey();
+     return s3Service.getProductImage(bucketName,ImageKey);
+    }
+
 
 }
