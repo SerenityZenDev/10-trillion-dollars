@@ -17,7 +17,6 @@ import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
 
 @Getter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "product")
 public class Product extends TimeStamped {
