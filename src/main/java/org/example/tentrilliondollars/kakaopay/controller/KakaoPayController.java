@@ -35,7 +35,6 @@ public class KakaoPayController {
     @GetMapping("/cancel/{orderId}")
     public ResponseEntity<?> cancel(@PathVariable Long orderId) throws Exception {
         CancelResDto cancelResDto = kakaoPayService.kakaoCancel(orderId);
-        orderService.deleteOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(cancelResDto);
     }

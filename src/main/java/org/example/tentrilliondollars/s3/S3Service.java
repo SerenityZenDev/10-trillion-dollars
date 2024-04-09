@@ -30,7 +30,7 @@ public class S3Service {
         s3.putObject(objectRequest, RequestBody.fromBytes(file));
 
     }
-    public ResponseEntity<byte[]> getProductImage(String bucketName,String key) throws IOException {
+    public ResponseEntity<byte[]> getImage(String bucketName,String key) throws IOException {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
