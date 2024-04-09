@@ -117,7 +117,7 @@ public class KakaoPayService {
             ));
     }
 
-
+    @Transactional
     public CancelResDto kakaoCancel(Long orderId) {
         String tid = orderRepository.getReferenceById(orderId).getKakaoTid();
         HttpHeaders headers = new HttpHeaders();
@@ -131,6 +131,7 @@ public class KakaoPayService {
         RestTemplate rt = new RestTemplate();
         CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(), requestEntity,
             CancelResDto.class);
+        orderService.deleteOrder(orderId);
         return cancelResDto;
     }
 
