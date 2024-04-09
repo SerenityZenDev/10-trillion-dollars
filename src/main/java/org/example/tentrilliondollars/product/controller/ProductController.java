@@ -1,20 +1,20 @@
 package org.example.tentrilliondollars.product.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.service.ProductCacheService;
 import org.example.tentrilliondollars.product.service.ProductService;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,5 +52,9 @@ public class ProductController {
         return productService.getAllProductsBySearch(search, pageable);
     }
 
+    @GetMapping("{productId}/image")
+    public ResponseEntity<byte[]> getProductImage(@PathVariable Long productId) throws IOException {
+      return productService.getProductImage(productId);
+    }
 
 }
