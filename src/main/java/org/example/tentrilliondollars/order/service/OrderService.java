@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.service.AddressService;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class OrderService {
 
@@ -69,7 +71,11 @@ public class OrderService {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // 현재 스레드의 인터럽트 상태를 다시 설정
                 throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
-            } finally {
+            } catch (Exception e) {
+                log.error("결제 과정에서 예상치 못한 오류가 발생했습니다.", e.getMessage());
+                throw e;
+            }
+            finally {
                 if (lock.isLocked()) {
                     lock.unlock();
                 }
