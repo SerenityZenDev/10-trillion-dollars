@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.service.ProductCacheService;
@@ -18,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
     private final ProductCacheService productCacheService;
+
 
     @GetMapping
     public List<ProductResponse> getAllProducts(
