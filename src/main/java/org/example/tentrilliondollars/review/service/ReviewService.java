@@ -6,9 +6,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import org.example.tentrilliondollars.global.exception.AccessDeniedException;
 import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.global.exception.NotFoundException;
+=======
+import org.example.tentrilliondollars.global.exception.NotFoundException;
+import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
+>>>>>>> bcdfe972488b6d6c180d783b47613f16a3de86d8
 import org.example.tentrilliondollars.order.service.OrderService;
 import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
@@ -21,6 +26,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+<<<<<<< HEAD
+=======
+import org.springframework.web.server.ResponseStatusException;
+>>>>>>> bcdfe972488b6d6c180d783b47613f16a3de86d8
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @Service
@@ -124,6 +133,7 @@ public class ReviewService {
         );
     }
 
+<<<<<<< HEAD
     public void uploadReviewImage(Long productId, MultipartFile file) throws IOException {
         String imageKey = UUID.randomUUID().toString();
         s3Service.putObject(
@@ -133,6 +143,27 @@ public class ReviewService {
         Review review = getReview(productId);
         review.updateImageId(imageKey);
         reviewRepository.save(review);
+=======
+    public void uploadReviewImage(Long reviewId, MultipartFile file) throws IOException {
+        String imageKey =UUID.randomUUID().toString();
+        String format = "review-images/%s/%s".formatted(reviewId,
+                imageKey)+".PNG";
+        s3Service.putObject(
+                bucketName,format,
+                file);
+        String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
+        Review review =getReview(reviewId);
+        review.updateImageUrl(url);
+       reviewRepository.save(review);
+    }
+
+    public String getReviewImage(Long reviewId) {
+        try {
+            return getReview(reviewId).getImageUrl();
+        } catch (NoSuchKeyException e) {
+            throw new NotFoundException("요청한 리뷰 이미지가 S3 버킷에 존재하지 않습니다. 이미지 키를 확인해주세요.");
+        }
+>>>>>>> bcdfe972488b6d6c180d783b47613f16a3de86d8
     }
 
 

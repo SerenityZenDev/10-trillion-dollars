@@ -22,7 +22,7 @@ public class Review extends TimeStamped {
     @Column
     private String content;
     @Column
-    private String imageKey;
+    private String imageUrl;
     @Column
     private int score;
 
@@ -49,8 +49,8 @@ public class Review extends TimeStamped {
         this.content = reviewRequest.getContent();
         this.score = reviewRequest.getScore();
     }
-    public void updateImageId(String imageKey){
-        this.imageKey =imageKey;
+    public void updateImageUrl(String imageUrl){
+        this.imageUrl =imageUrl;
     }
 
 }
