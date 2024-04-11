@@ -29,7 +29,7 @@ public class KakaoPayController {
         @RequestParam("pg_token") String pgToken) throws Exception {
         PayApproveResDto kakaoApprove = kakaoPayService.getApprove(pgToken,orderId);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(kakaoApprove);
+            .body("결제가 완료되었습니다 해당 페이지를 종료해주십시요.");
     }
 
     @GetMapping("/cancel/{orderId}")
