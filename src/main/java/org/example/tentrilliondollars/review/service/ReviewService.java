@@ -118,21 +118,21 @@ public class ReviewService {
 
     public Review getReview(Long reviewId) {
         return reviewRepository.findById(reviewId).orElseThrow(
-                () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+            () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
         );
     }
 
     public void uploadReviewImage(Long reviewId, MultipartFile file) throws IOException {
         String imageKey =UUID.randomUUID().toString();
         String format = "review-images/%s/%s".formatted(reviewId,
-                imageKey)+".PNG";
+            imageKey)+".PNG";
         s3Service.putObject(
-                bucketName,format,
-                file);
+            bucketName,format,
+            file);
         String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
         Review review =getReview(reviewId);
         review.updateImageUrl(url);
-       reviewRepository.save(review);
+        reviewRepository.save(review);
     }
 
     public String getReviewImage(Long reviewId) {

@@ -88,9 +88,4 @@ public class UserController {
         return ResponseEntity.ok().body("회원 탈퇴 성공");
     }
 
-//    @PostMapping("/create-multiple")
-//    public ResponseEntity<String> createMultipleUsers() {
-//        userService.createMultipleUsers();
-//        return ResponseEntity.ok("Multiple users created successfully");
-//    }
 }
