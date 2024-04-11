@@ -124,20 +124,20 @@ public class ReviewService {
 
     public void uploadReviewImage(Long reviewId, MultipartFile file) throws IOException {
         String imageKey =UUID.randomUUID().toString();
-        String format = "product-images/%s/%s".formatted(reviewId,
+        String format = "review-images/%s/%s".formatted(reviewId,
                 imageKey)+".PNG";
         s3Service.putObject(
                 bucketName,format,
                 file);
         String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
         Review review =getReview(reviewId);
-        review.updateImageId(url);
+        review.updateImageUrl(url);
        reviewRepository.save(review);
     }
 
     public String getReviewImage(Long reviewId) {
         try {
-            return getReview(reviewId).getImageKey();
+            return getReview(reviewId).getImageUrl();
         } catch (NoSuchKeyException e) {
             throw new NotFoundException("요청한 리뷰 이미지가 S3 버킷에 존재하지 않습니다. 이미지 키를 확인해주세요.");
         }

@@ -151,17 +151,17 @@ public class ProductService {
         String format = "product-images/%s/%s".formatted(productId,
                 imageKey)+".PNG";
         s3Service.putObject(
-                bucketName,format ,
+                bucketName,format,
                 file);
         String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
         Product product = getProduct(productId);
-        product.updateImageKey(url);
+        product.updateImageUrl(url);
         productRepository.save(product);
     }
 
     public String getProductImage(Long productId) {
         try {
-            return getProduct(productId).getImageKey();
+            return getProduct(productId).getImageUrl();
         } catch (NoSuchKeyException e) {
             throw new NotFoundException("요청한 상품 이미지가 S3 버킷에 존재하지 않습니다. 이미지 키를 확인해주세요.");
         }
