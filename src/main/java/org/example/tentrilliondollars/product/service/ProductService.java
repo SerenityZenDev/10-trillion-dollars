@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.global.exception.AccessDeniedException;
+import org.example.tentrilliondollars.global.exception.UnauthorizedAccessException;
 import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
