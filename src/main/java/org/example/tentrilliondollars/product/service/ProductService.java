@@ -148,23 +148,22 @@ public class ProductService {
 
     public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
         String imageKey = UUID.randomUUID().toString();
+        String format = "product-images/%s/%s".formatted(productId,
+                imageKey)+".PNG";
         s3Service.putObject(
-                bucketName, "product-images/%s/%s".formatted(productId,
-                        imageKey),
-                file.getBytes());
+                bucketName,format,
+                file);
+        String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
         Product product = getProduct(productId);
-        product.updateImageKey(imageKey);
+        product.updateImageUrl(url);
         productRepository.save(product);
     }
 
-    public ResponseEntity<byte[]> getProductImage(Long productId) {
+    public String getProductImage(Long productId) {
         try {
-            String ImageKey = "product-images/1/"+getProduct(productId).getImageKey();
-            return s3Service.getImage(bucketName,ImageKey);
+            return getProduct(productId).getImageUrl();
         } catch (NoSuchKeyException e) {
             throw new NotFoundException("요청한 상품 이미지가 S3 버킷에 존재하지 않습니다. 이미지 키를 확인해주세요.");
-        } catch (IOException e) {
-            throw new RuntimeException("상품 이미지 조회 중 오류가 발생했습니다.", e);
         }
 
     }
