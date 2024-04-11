@@ -50,7 +50,8 @@ public class KakaoPayService {
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization", auth);
-        PayRequestDto payRequestDto = makeRequest.getReadyRequest(createPayInfo(orderId));
+
+        PayRequestDto payRequestDto = makeRequest.getReadyRequest(createPayInfo(orderId),orderId);
         HttpEntity<MultiValueMap<String, String>> urlRequest = new HttpEntity<>(
             payRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
@@ -69,7 +70,7 @@ public class KakaoPayService {
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization", auth);
-        PayRequestDto payRequestDto = makeRequest.getApproveRequest(tid, pgToken);
+        PayRequestDto payRequestDto = makeRequest.getApproveRequest(tid, pgToken,orderId);
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(payRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
         PayApproveResDto payApproveResDto = rt.postForObject(payRequestDto.getUrl(), requestEntity,
@@ -94,7 +95,6 @@ public class KakaoPayService {
                 orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
                 order.changeState(OrderState.PREPARING);
                 orderRepository.save(order);
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 재설정
                 throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
@@ -140,6 +140,8 @@ public class KakaoPayService {
         payInfoDto.setItemName("TenCompany");
         return payInfoDto;
     }
+
+
 }
 
 

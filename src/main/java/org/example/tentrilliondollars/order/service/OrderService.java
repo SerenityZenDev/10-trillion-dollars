@@ -24,6 +24,7 @@ import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,6 @@ public class OrderService {
         for (Long productId : basket.keySet()) {
             String lockKey = "product_lock:" + productId;
             RLock lock = redissonClient.getLock(lockKey);
-
             try {
                 boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
                 if (!isLocked) {
