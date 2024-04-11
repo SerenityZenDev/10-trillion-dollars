@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.service.AddressService;
+import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
 import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
@@ -39,13 +40,6 @@ public class OrderService {
     private final EntityManager entityManager;
     private final RedissonClient redissonClient;
 
-    //글로벌 예외에 추가해야함
-    public class InsufficientStockException extends RuntimeException {
-
-        public InsufficientStockException(String message) {
-            super(message);
-        }
-    }
 
     @Transactional
     public void createOrder(Map<Long, Long> basket, UserDetailsImpl userDetails, Long addressId)
@@ -65,7 +59,7 @@ public class OrderService {
                 }
                 Product product = productService.getProduct(productId);
                 if (product.getStock() < basket.get(productId)) {
-                    throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+                    throw new BadRequestException("상품 재고가 부족합니다. 상품 ID: " + productId);
                 }
                 OrderDetail orderDetail = new OrderDetail(order, productId, basket.get(productId),
                     product.getPrice(), product.getName());
@@ -93,7 +87,7 @@ public class OrderService {
         Long stock = product.getStock();
         // 재고 확인
         if (quantity > stock) {
-            throw new InsufficientStockException("상품 재고가 부족합니다. 상품 ID: " + productId);
+            throw new BadRequestException("상품 재고가 부족합니다. 상품 ID: " + productId);
         }
         product.updateStockAfterOrder(quantity);
         productService.save(product);
@@ -141,7 +135,7 @@ public class OrderService {
     public void checkBasket(Map<Long, Long> basket) throws Exception {
         for (Long key : basket.keySet()) {
             if (!checkStock(key, basket.get(key))) {
-                throw new Exception("id:" + key + " 수량부족");
+                throw new BadRequestException("id:" + key + " 수량부족");
             }
         }
     }
