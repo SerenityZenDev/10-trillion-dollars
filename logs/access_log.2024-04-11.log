@@ -1154,3 +1154,18 @@
 2024-04-11 16:57:31 500 GET /payment/success/7?pg_token=859625aae6bba30a2a82 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 - 0:0:0:0:0:0:0:1 287
 2024-04-11 19:16:35 200 POST /users/login HTTP/1.1 PostmanRuntime/7.37.3 - 0:0:0:0:0:0:0:1 16
 2024-04-11 19:16:43 500 POST /products/3/reviews HTTP/1.1 PostmanRuntime/7.37.3 - 0:0:0:0:0:0:0:1 130
+2024-04-11 19:20:05 200 OPTIONS /users/login HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 -
+2024-04-11 19:20:06 200 POST /users/login HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 16
+2024-04-11 19:20:07 200 OPTIONS /admin/products?page=0&size=10 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 -
+2024-04-11 19:20:07 200 GET /admin/products?page=0&size=10 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 1250
+2024-04-11 19:20:07 200 OPTIONS /products/3/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 -
+2024-04-11 19:20:07 200 GET /products/3/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 120
+2024-04-11 19:20:07 200 OPTIONS /products/5/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 -
+2024-04-11 19:20:08 200 GET /products/5/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 12
+2024-04-11 19:20:08 200 OPTIONS /products/6/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 -
+2024-04-11 19:20:08 200 GET /products/6/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 12
+2024-04-11 19:20:58 200 GET /admin/products?page=0&size=10 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 1250
+2024-04-11 19:20:58 200 GET /admin/products?page=0&size=10 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 1250
+2024-04-11 19:20:58 200 GET /products/3/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 120
+2024-04-11 19:20:58 200 GET /products/5/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 12
+2024-04-11 19:20:58 200 GET /products/6/reviews HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 http://localhost:8081/ 0:0:0:0:0:0:0:1 12

@@ -62,7 +62,8 @@ public List<ProductAdminResponse> getAdminProducts(
     @AuthenticationPrincipal UserDetailsImpl userDetails
 ) {
     Pageable pageable = PageRequest.of(page, size);
-    return productService.getAdminProducts2(userDetails.getUser(), pageable);
+    //본래의 get method를 관리자 전용으로
+    return productService.getAdminProducts(userDetails.getUser(), pageable);
 }
     @PutMapping("/{productId}")
     public ResponseEntity<String> updateAdminProduct(

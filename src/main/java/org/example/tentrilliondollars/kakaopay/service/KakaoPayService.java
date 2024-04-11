@@ -142,7 +142,40 @@ public class KakaoPayService {
         return payInfoDto;
     }
 
+    @Transactional
+    public void getApproveTest( Long orderId) throws Exception {
+        Order order = orderRepository.getReferenceById(orderId);
+        //밑에서 결제 완료 후 상태 업데이트
+        //여기서    System.out.println("카카오 서비스 실행");
+        //주문 상태가 NOTPAY인지 확인
+        if (order.getState() != OrderState.NOTPAYED) {
+            throw new IllegalStateException("주문 상태가 결제 대기 상태가 아닙니다.");
+        }
+        Map<Long, Long> basket = getBasketFromOrder(order);
+        entityManager.clear();
+        for (Long productId : basket.keySet()) {
+            String lockKey = "product_lock:" + productId;
+            RLock lock = redissonClient.getLock(lockKey);
+            try {
+                boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
+                if (!isLocked) {
+                    throw new RuntimeException("락 획득에 실패했습니다.");
+                }
+                orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
+                order.changeState(OrderState.PREPARING);
+                orderRepository.save(order);
 
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 재설정
+                throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
+            } finally {
+                if (lock.isLocked()) {
+                    lock.unlock();
+                }
+            }
+        }
+        // 여기까지
+    }
 }
 
 

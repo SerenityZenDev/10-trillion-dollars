@@ -157,6 +157,23 @@ public class OrderService {
         }
         return totalPrice;
     }
+    @Transactional
+    public Long createOrderTest(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
+        checkBasket(basket);
+        Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressId);
+        orderRepository.save(order);
+        for(Long key:basket.keySet()){
+            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
+            orderDetailRepository.save(orderDetail);
+            updateStock(key,basket.get(key));
+        }
+        return order.getId();
+    }
+    public void updateStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
+        Product product =  productService.getProduct(productId);
+        product.updateStockAfterOrder(quantity);
+    }
+
 
 
 }

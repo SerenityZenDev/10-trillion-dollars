@@ -83,12 +83,14 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
-        Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
-        return getPageResponse(productPage);
-    }
+    // 본래의 admin get 메서드
 
-    public List<ProductAdminResponse> getAdminProducts2(User user, Pageable pageable) {
+    //    public List<ProductResponse> getAdminProducts(User user, Pageable pageable) {
+    //        Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
+    //        return getPageResponse(productPage);
+    //    }
+    //수정된 메서드
+    public List<ProductAdminResponse> getAdminProducts(User user, Pageable pageable) {
         Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
         return getPageResponse2(productPage);
     }
