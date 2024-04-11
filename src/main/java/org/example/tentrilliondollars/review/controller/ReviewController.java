@@ -57,7 +57,7 @@ public class ReviewController {
     }
 
     @GetMapping("reviews/{reviewId}/image")
-    public ResponseEntity<byte[]> getProductImage(@PathVariable Long reviewId) throws IOException{
+    public String getReviewImage(@PathVariable Long reviewId) throws IOException{
         return reviewService.getReviewImage(reviewId);
     }
 

@@ -124,23 +124,22 @@ public class ReviewService {
 
     public void uploadReviewImage(Long reviewId, MultipartFile file) throws IOException {
         String imageKey =UUID.randomUUID().toString();
+        String format = "product-images/%s/%s".formatted(reviewId,
+                imageKey)+".PNG";
         s3Service.putObject(
-                bucketName,"review-images/%s/%s".formatted(reviewId,
-                        imageKey),
-                file.getBytes());
+                bucketName,format,
+                file);
+        String url = "https://"+bucketName+".s3"+".ap-northeast-2.amazonaws.com/"+format;
         Review review =getReview(reviewId);
-        review.updateImageId(imageKey);
+        review.updateImageId(url);
        reviewRepository.save(review);
     }
 
-    public ResponseEntity<byte[]> getReviewImage(Long reviewId) {
+    public String getReviewImage(Long reviewId) {
         try {
-            String imageKey = "review-images/1/" + getReview(reviewId).getImageKey();
-            return s3Service.getImage(bucketName, imageKey);
+            return getReview(reviewId).getImageKey();
         } catch (NoSuchKeyException e) {
             throw new NotFoundException("요청한 리뷰 이미지가 S3 버킷에 존재하지 않습니다. 이미지 키를 확인해주세요.");
-        } catch (IOException e) {
-            throw new RuntimeException("리뷰 이미지 조회 중 오류가 발생했습니다.", e);
         }
     }
 
