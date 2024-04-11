@@ -1,14 +1,21 @@
 package org.example.tentrilliondollars.product.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
+import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
+import org.example.tentrilliondollars.order.entity.OrderDetail;
+import org.example.tentrilliondollars.order.service.OrderAdminService;
+import org.example.tentrilliondollars.order.service.OrderService;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
+import org.example.tentrilliondollars.product.dto.response.ProductAdminResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductDetailResponse;
 import org.example.tentrilliondollars.product.dto.response.ProductResponse;
 import org.example.tentrilliondollars.product.entity.Product;
@@ -36,7 +43,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserService userService;
     private final S3Service s3Service;
-
+    private final OrderAdminService orderAdminService;
     @Value("${product.bucket.name}")
     String bucketName;
 
@@ -79,6 +86,10 @@ public class ProductService {
         return getPageResponse(productPage);
     }
 
+    public List<ProductAdminResponse> getAdminProducts2(User user, Pageable pageable) {
+        Page<Product> productPage = productRepository.findAllByUserIdAndStateTrue(user.getId(), pageable);
+        return getPageResponse2(productPage);
+    }
     @Transactional
     public void updateAdminProduct(Long productId, ProductUpdateRequest productRequest, User user)
     {
@@ -144,7 +155,17 @@ public class ProductService {
             .map(ProductResponse::new)
             .collect(Collectors.toList());
     }
-
+private List<ProductAdminResponse> getPageResponse2(Page<Product> productPage) {
+    return productPage.getContent().stream()
+        .map(product -> {
+            List<OrderDetail> orderDetails = orderAdminService.findOrderDetailsByProductId(product.getId());
+            List<OrderDetailAdminResponse> orderDetailResponseDtos = orderDetails.stream()
+                .map(OrderDetailAdminResponse::new)
+                .collect(Collectors.toList());
+            return new ProductAdminResponse(product, orderDetailResponseDtos);
+        })
+        .collect(Collectors.toList());
+}
     public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
     String imageKey =UUID.randomUUID().toString();
         s3Service.putObject(
