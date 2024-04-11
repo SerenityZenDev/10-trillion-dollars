@@ -1,7 +1,5 @@
 package org.example.tentrilliondollars.order.entity;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -51,3 +49,5 @@ public class OrderDetail {
     }
 
 }
+
+
