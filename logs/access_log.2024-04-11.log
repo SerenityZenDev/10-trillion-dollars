@@ -1152,3 +1152,5 @@
 2024-04-11 16:55:07 500 GET /payment/success/7?pg_token=2248cddf88cdbdbcf688 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 - 0:0:0:0:0:0:0:1 287
 2024-04-11 16:57:12 200 GET /payment/ready/7 HTTP/1.1 PostmanRuntime/7.37.3 - 0:0:0:0:0:0:0:1 210
 2024-04-11 16:57:31 500 GET /payment/success/7?pg_token=859625aae6bba30a2a82 HTTP/1.1 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 - 0:0:0:0:0:0:0:1 287
+2024-04-11 19:16:35 200 POST /users/login HTTP/1.1 PostmanRuntime/7.37.3 - 0:0:0:0:0:0:0:1 16
+2024-04-11 19:16:43 500 POST /products/3/reviews HTTP/1.1 PostmanRuntime/7.37.3 - 0:0:0:0:0:0:0:1 130
