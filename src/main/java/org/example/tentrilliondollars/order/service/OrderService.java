@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.service.AddressService;
 import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
+import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
@@ -23,6 +25,7 @@ import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +52,6 @@ public class OrderService {
         for (Long productId : basket.keySet()) {
             String lockKey = "product_lock:" + productId;
             RLock lock = redissonClient.getLock(lockKey);
-
             try {
                 boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
                 if (!isLocked) {
@@ -155,5 +157,23 @@ public class OrderService {
         }
         return totalPrice;
     }
+    @Transactional
+    public Long createOrderTest(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
+        checkBasket(basket);
+        Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressId);
+        orderRepository.save(order);
+        for(Long key:basket.keySet()){
+            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
+            orderDetailRepository.save(orderDetail);
+            updateStock(key,basket.get(key));
+        }
+        return order.getId();
+    }
+    public void updateStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
+        Product product =  productService.getProduct(productId);
+        product.updateStockAfterOrder(quantity);
+    }
+
+
 
 }

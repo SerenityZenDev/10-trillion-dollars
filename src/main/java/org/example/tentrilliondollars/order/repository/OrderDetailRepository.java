@@ -17,5 +17,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     long countByUserIdAndProductId(@Param("userId") Long userId, @Param("productId") Long productId);
 
     List<OrderDetail> findByOrder(Order order);
+    //관리자 페이지에 주문서를 불러오는 쿼리
+    List<OrderDetail> findByProductId(Long productId);
 
 }

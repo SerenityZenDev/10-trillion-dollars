@@ -49,5 +49,4 @@ public class ExceptionController {
     public ResponseEntity<Object> handleConflictException(ConflictException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
-
 }
