@@ -100,7 +100,6 @@ public class KakaoPayService {
                 orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
                 order.changeState(OrderState.PREPARING);
                 orderRepository.save(order);
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 재설정
                 throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
