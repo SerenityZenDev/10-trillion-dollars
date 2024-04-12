@@ -79,7 +79,7 @@ public class OrderService {
 
     @Transactional
     public void updateStockAndCreateOrderDetail(Long productId, Long quantity) {
-        entityManager.clear();
+        //entityManager.clear();
         Product product = productService.getProduct(productId);
         System.out.println(product.getStock());
         Long stock = product.getStock();

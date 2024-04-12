@@ -2,6 +2,8 @@ package org.example.tentrilliondollars.kakaopay.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -13,12 +15,14 @@ import org.example.tentrilliondollars.kakaopay.dto.request.PayRequestDto;
 import org.example.tentrilliondollars.kakaopay.dto.response.CancelResDto;
 import org.example.tentrilliondollars.kakaopay.dto.response.PayApproveResDto;
 import org.example.tentrilliondollars.kakaopay.dto.response.PayReadyResDto;
+import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.entity.OrderState;
 import org.example.tentrilliondollars.order.repository.OrderDetailRepository;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
 import org.example.tentrilliondollars.order.service.OrderService;
+import org.example.tentrilliondollars.product.entity.Product;
 import org.example.tentrilliondollars.product.service.ProductService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -46,6 +50,10 @@ public class KakaoPayService {
 
     @Transactional
     public PayReadyResDto getRedirectUrl(Long orderId) throws Exception {
+        Order order = orderRepository.getReferenceById(orderId);
+        if (order.getState() != OrderState.NOTPAYED) {
+            throw new IllegalStateException("주문 상태가 결제 대기 상태가 아닙니다.");
+        }
         HttpHeaders headers = new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -79,9 +87,6 @@ public class KakaoPayService {
         //여기서
         System.out.println("카카오 서비스 실행");
         //주문 상태가 NOTPAY인지 확인
-        if (order.getState() != OrderState.NOTPAYED) {
-            throw new IllegalStateException("주문 상태가 결제 대기 상태가 아닙니다.");
-        }
         Map<Long, Long> basket = getBasketFromOrder(order);
         entityManager.clear();
         for (Long productId : basket.keySet()) {
@@ -132,6 +137,12 @@ public class KakaoPayService {
         RestTemplate rt = new RestTemplate();
         CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(), requestEntity,
             CancelResDto.class);
+        List<OrderDetailResponseDto> orderDetailList=orderService.getOrderDetailList(orderId);
+        for(OrderDetailResponseDto responseDto:orderDetailList){
+            Long productId = responseDto.getProductId();
+            Product product = productService.getProduct(productId);
+            product.updateStockAfterOrder(-responseDto.getQuantity());
+        }
         orderService.deleteOrder(orderId);
         return cancelResDto;
     }
