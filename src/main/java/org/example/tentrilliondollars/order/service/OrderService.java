@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tentrilliondollars.address.entity.Address;
 import org.example.tentrilliondollars.address.service.AddressService;
 import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.global.security.UserDetailsImpl;
-import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.dto.OrderResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
@@ -143,10 +141,12 @@ public class OrderService {
     public Order getOrder(Long orderId) {
         return orderRepository.getById(orderId);
     }
-
+//    리뷰 검증 메서드 1
     public long countByUserIdAndProductId(Long userId, Long productId) {
         return orderDetailRepository.countByUserIdAndProductId(userId, productId);
     }
+
+
 
     public Long getTotalPrice(Long orderId) {
         List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrder(
@@ -157,6 +157,26 @@ public class OrderService {
         }
         return totalPrice;
     }
+
+    public boolean checkOrderState(Long userId, Long productId) {
+        List<OrderDetail> orderDetails = orderDetailRepository.findByOrderUserIdAndProductId(userId, productId);
+        for (OrderDetail orderDetail : orderDetails) {
+            if (!orderDetail.getOrder().getState().equals(OrderState.NOTPAYED)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public List<OrderDetail> getOrderDetails(Long userId, Long productId) {
+        return orderDetailRepository.findByOrder_UserIdAndProductIdAndReviewedIsFalse(userId, productId);
+    }
+    @Transactional
+    public void saveOrderDetailReviewedState(OrderDetail orderDetail){
+        orderDetail.setReviewed(true);
+        orderDetailRepository.save(orderDetail);
+    }
+
+
     @Transactional
     public Long createOrderTest(Map<Long,Long> basket,UserDetailsImpl userDetails,Long addressId) throws Exception {
         checkBasket(basket);
@@ -169,11 +189,10 @@ public class OrderService {
         }
         return order.getId();
     }
+
     public void updateStock(Long productId,Long quantity) throws ChangeSetPersister.NotFoundException {
         Product product =  productService.getProduct(productId);
         product.updateStockAfterOrder(quantity);
     }
-
-
 
 }
