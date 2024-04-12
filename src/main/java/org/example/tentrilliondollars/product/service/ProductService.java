@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.example.tentrilliondollars.global.exception.AccessDeniedException;
+import org.example.tentrilliondollars.global.exception.UnauthorizedAccessException;
 import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
@@ -131,25 +133,25 @@ public class ProductService {
 
     public void checkProductStateIsFalse(Product product) {
         if (!product.isState()) {
-            throw new IllegalArgumentException("해당 상품은 삭제되었습니다.");
+            throw new NotFoundException("해당 상품은 삭제되었습니다.");
         }
     }
 
     public Product getProduct(Long productId) {
         return productRepository.findById(productId).orElseThrow(
-                () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+                () -> new NotFoundException("해당 상품이 존재하지 않습니다.")
         );
     }
 
     private void validateUserRole(User user) {
         if (!user.getRole().equals(UserRoleEnum.SELLER)) {
-            throw new IllegalArgumentException("인증되지 않은 유저입니다.");
+            throw new UnauthorizedAccessException("인증되지 않은 유저입니다.");
         }
     }
 
     private void validateProductOwner(User user, Product product) {
         if (!product.getUserId().equals(user.getId())) {
-            throw new IllegalArgumentException("해당 상품의 권한유저가 아닙니다.");
+            throw new AccessDeniedException("해당 상품의 권한유저가 아닙니다.");
         }
     }
 
