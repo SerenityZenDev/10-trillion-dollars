@@ -49,7 +49,7 @@ public class UserController {
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         jwtUtil.addJwtToCookie(token, response);
 
-        return ResponseEntity.ok().body("로그인 성공");
+        return ResponseEntity.ok().body(loginedUser.getRole().toString());
     }
 
     @GetMapping("/profile")
