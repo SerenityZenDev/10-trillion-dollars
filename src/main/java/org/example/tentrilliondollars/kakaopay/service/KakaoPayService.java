@@ -50,6 +50,10 @@ public class KakaoPayService {
 
     @Transactional
     public PayReadyResDto getRedirectUrl(Long orderId) throws Exception {
+        Order order = orderRepository.getReferenceById(orderId);
+        if (order.getState() != OrderState.NOTPAYED) {
+            throw new IllegalStateException("주문 상태가 결제 대기 상태가 아닙니다.");
+        }
         HttpHeaders headers = new HttpHeaders();
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -83,9 +87,6 @@ public class KakaoPayService {
         //여기서
         System.out.println("카카오 서비스 실행");
         //주문 상태가 NOTPAY인지 확인
-        if (order.getState() != OrderState.NOTPAYED) {
-            throw new IllegalStateException("주문 상태가 결제 대기 상태가 아닙니다.");
-        }
         Map<Long, Long> basket = getBasketFromOrder(order);
         entityManager.clear();
         for (Long productId : basket.keySet()) {
