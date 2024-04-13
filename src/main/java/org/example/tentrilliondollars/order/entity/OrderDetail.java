@@ -36,18 +36,18 @@ public class OrderDetail {
     @Column
     private Long quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Order order;
+    @Column
+    private Long orderId;
 
-    public OrderDetail(Order order,Long productId,Long quantity,Long price,String productName){
+
+    public OrderDetail(Long orderId,Long productId,Long quantity,Long price,String productName){
         this.productId = productId;
         this.productName = productName;
         this.quantity = quantity;
-        this.order = order;
+        this.orderId = orderId;
         this.price = price;
-    }
 
+    }
 }
 
 

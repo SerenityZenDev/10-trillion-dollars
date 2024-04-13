@@ -61,7 +61,7 @@ public class OrderService {
                 if (product.getStock() < basket.get(productId)) {
                     throw new BadRequestException("상품 재고가 부족합니다. 상품 ID: " + productId);
                 }
-                OrderDetail orderDetail = new OrderDetail(order, productId, basket.get(productId),
+                OrderDetail orderDetail = new OrderDetail(order.getId(), productId, basket.get(productId),
                     product.getPrice(), product.getName());
                 orderDetailRepository.save(orderDetail);
             } catch (InterruptedException e) {
@@ -95,15 +95,15 @@ public class OrderService {
 
 
     public List<OrderDetailResponseDto> getOrderDetailList(Long orderId) {
-        List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrder(
-            orderRepository.getById(orderId));
+        List<OrderDetail> listOfOrderedProducts = orderDetailRepository.findOrderDetailsByOrderId(
+           orderId);
         return listOfOrderedProducts.stream().map(OrderDetailResponseDto::new).toList();
     }
 
     @Transactional
     public void deleteOrder(Long orderId) {
         orderDetailRepository.deleteAll(
-            orderDetailRepository.findOrderDetailsByOrder(orderRepository.getById(orderId)));
+            orderDetailRepository.findOrderDetailsByOrderId(orderId));
         orderRepository.delete(orderRepository.getById(orderId));
     }
 
@@ -149,8 +149,8 @@ public class OrderService {
     }
 
     public Long getTotalPrice(Long orderId) {
-        List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrder(
-            orderRepository.getReferenceById(orderId));
+        List<OrderDetail> ListofOrderDetail = orderDetailRepository.findOrderDetailsByOrderId(
+           orderId);
         Long totalPrice = 0L;
         for (OrderDetail orderDetail : ListofOrderDetail) {
             totalPrice += orderDetail.getPrice() * orderDetail.getQuantity();
@@ -163,7 +163,7 @@ public class OrderService {
         Order order = new Order(userDetails.getUser().getId(),OrderState.NOTPAYED, addressId);
         orderRepository.save(order);
         for(Long key:basket.keySet()){
-            OrderDetail orderDetail= new OrderDetail(order,key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
+            OrderDetail orderDetail= new OrderDetail(order.getId(),key,basket.get(key),productService.getProduct(key).getPrice(),productService.getProduct(key).getName());
             orderDetailRepository.save(orderDetail);
             updateStock(key,basket.get(key));
         }
