@@ -115,7 +115,7 @@ public class KakaoPayService {
     }
 
     private Map<Long, Long> getBasketFromOrder(Order order) {
-        return orderDetailRepository.findByOrder(order)
+        return orderDetailRepository.findByOrderId(order.getId())
             .stream()
             .collect(Collectors.toMap(
                 OrderDetail::getProductId,
@@ -155,7 +155,7 @@ public class KakaoPayService {
     }
 
     @Transactional
-    public void getApproveTest( Long orderId) throws Exception {
+    public void getApproveTest(Long orderId) throws Exception {
         Order order = orderRepository.getReferenceById(orderId);
         //밑에서 결제 완료 후 상태 업데이트
         //여기서    System.out.println("카카오 서비스 실행");

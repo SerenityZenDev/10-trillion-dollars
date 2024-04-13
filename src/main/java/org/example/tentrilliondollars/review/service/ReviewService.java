@@ -121,12 +121,13 @@ public class ReviewService {
     }
 
     // 사용자가 해당 상품을 구매했는지 확인1
+    /*
     private boolean canUserReviewProduct(Long userId, Long productId) {
         long orderCount = orderService.countByUserIdAndProductId(userId, productId);
         long reviewCount = reviewRepository.countByUserIdAndProductId(userId, productId);
         return orderCount > reviewCount;
     }
-
+*/
 
     public Review getReview(Long reviewId) {
         return reviewRepository.findById(reviewId).orElseThrow(

@@ -11,7 +11,9 @@ import org.example.tentrilliondollars.global.exception.AccessDeniedException;
 import org.example.tentrilliondollars.global.exception.UnauthorizedAccessException;
 import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
 import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
+import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
+import org.example.tentrilliondollars.order.repository.OrderRepository;
 import org.example.tentrilliondollars.order.service.OrderAdminService;
 import org.example.tentrilliondollars.order.service.OrderService;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
@@ -47,6 +49,7 @@ public class ProductService {
     private final UserService userService;
     private final S3Service s3Service;
     private final OrderAdminService orderAdminService;
+    private final OrderRepository orderRepository;
     @Value("${product.bucket.name}")
     String bucketName;
 
@@ -164,9 +167,12 @@ private List<ProductAdminResponse> getPageResponse2(Page<Product> productPage) {
     return productPage.getContent().stream()
         .map(product -> {
             List<OrderDetail> orderDetails = orderAdminService.findOrderDetailsByProductId(product.getId());
-            List<OrderDetailAdminResponse> orderDetailResponseDtos = orderDetails.stream()
-                .map(OrderDetailAdminResponse::new)
-                .collect(Collectors.toList());
+            List<OrderDetailAdminResponse> orderDetailResponseDtos = new ArrayList<>();
+            for(OrderDetail orderDetail:orderDetails){
+                Order order = orderRepository.getById(orderDetail.getOrderId());
+                orderDetailResponseDtos.add(new OrderDetailAdminResponse(orderDetail,order));
+            }
+
             return new ProductAdminResponse(product, orderDetailResponseDtos);
         })
         .collect(Collectors.toList());
