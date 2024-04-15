@@ -1,6 +1,7 @@
 package org.example.tentrilliondollars.user.controller;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -88,4 +89,9 @@ public class UserController {
         return ResponseEntity.ok().body("회원 탈퇴 성공");
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        jwtUtil.removeJwtAtCookie(request, response);
+        return ResponseEntity.ok().body("로그아웃 성공");
+    }
 }
