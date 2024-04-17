@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.kakaopay.dto.request.CancelRequestDto;
 import org.example.tentrilliondollars.kakaopay.dto.request.PayInfoDto;
 import org.example.tentrilliondollars.kakaopay.dto.request.PayRequestDto;
@@ -58,8 +59,7 @@ public class KakaoPayService {
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization", auth);
-
-        PayRequestDto payRequestDto = makeRequest.getReadyRequest(createPayInfo(orderId),orderId);
+        PayRequestDto payRequestDto = makeRequest.getReadyRequest(createPayInfo(orderId), orderId);
         HttpEntity<MultiValueMap<String, String>> urlRequest = new HttpEntity<>(
             payRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
@@ -68,7 +68,6 @@ public class KakaoPayService {
         orderRepository.getReferenceById(orderId).updateTid(payReadyResDto.getTid());
         return payReadyResDto;
     }
-    //
 
     @Transactional
     public PayApproveResDto getApprove(String pgToken, Long orderId) throws Exception {
@@ -78,38 +77,15 @@ public class KakaoPayService {
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.set("Authorization", auth);
-        PayRequestDto payRequestDto = makeRequest.getApproveRequest(tid, pgToken,orderId);
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(payRequestDto.getMap(), headers);
+        PayRequestDto payRequestDto = makeRequest.getApproveRequest(tid, pgToken, orderId);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(
+            payRequestDto.getMap(), headers);
         RestTemplate rt = new RestTemplate();
         PayApproveResDto payApproveResDto = rt.postForObject(payRequestDto.getUrl(), requestEntity,
             PayApproveResDto.class);
-        //밑에서 결제 완료 후 상태 업데이트
-        //여기서
-        System.out.println("카카오 서비스 실행");
-        //주문 상태가 NOTPAY인지 확인
-        Map<Long, Long> basket = getBasketFromOrder(order);
-        entityManager.clear();
-        for (Long productId : basket.keySet()) {
-            String lockKey = "product_lock:" + productId;
-            RLock lock = redissonClient.getLock(lockKey);
-            try {
-                boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
-                if (!isLocked) {
-                    throw new RuntimeException("락 획득에 실패했습니다.");
-                }
-                orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
-                order.changeState(OrderState.PREPARING);
-                orderRepository.save(order);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 재설정
-                throw new RuntimeException("락 획득 중 오류가 발생했습니다.", e);
-            } finally {
-                if (lock.isLocked()) {
-                    lock.unlock();
-                }
-            }
-        }
-        // 여기까지
+        //Map<Long, Long> basket = getBasketFromOrder(order);
+        order.changeState(OrderState.PREPARING);
+        orderRepository.save(order);
         return payApproveResDto;
     }
 
@@ -136,8 +112,8 @@ public class KakaoPayService {
         RestTemplate rt = new RestTemplate();
         CancelResDto cancelResDto = rt.postForObject(cancelRequestDto.getUrl(), requestEntity,
             CancelResDto.class);
-        List<OrderDetailResponseDto> orderDetailList=orderService.getOrderDetailList(orderId);
-        for(OrderDetailResponseDto responseDto:orderDetailList){
+        List<OrderDetailResponseDto> orderDetailList = orderService.getOrderDetailList(orderId);
+        for (OrderDetailResponseDto responseDto : orderDetailList) {
             Long productId = responseDto.getProductId();
             Product product = productService.getProduct(productId);
             product.updateStockAfterOrder(-responseDto.getQuantity());
@@ -172,7 +148,7 @@ public class KakaoPayService {
                 if (!isLocked) {
                     throw new RuntimeException("락 획득에 실패했습니다.");
                 }
-                orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
+                //orderService.updateStockAndCreateOrderDetail(productId, basket.get(productId));
                 order.changeState(OrderState.PREPARING);
                 orderRepository.save(order);
 
