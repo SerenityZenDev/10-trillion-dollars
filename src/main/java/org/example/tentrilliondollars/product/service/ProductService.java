@@ -1,25 +1,21 @@
 package org.example.tentrilliondollars.product.service;
 
-import jakarta.persistence.EntityManager;
+import jakarta.validation.constraints.Email;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import lombok.RequiredArgsConstructor;
 import org.example.tentrilliondollars.global.exception.AccessDeniedException;
-import org.example.tentrilliondollars.global.exception.BadRequestException;
 import org.example.tentrilliondollars.global.exception.UnauthorizedAccessException;
 import org.example.tentrilliondollars.order.dto.OrderDetailAdminResponse;
-import org.example.tentrilliondollars.order.dto.OrderDetailResponseDto;
 import org.example.tentrilliondollars.order.entity.Order;
 import org.example.tentrilliondollars.order.entity.OrderDetail;
 import org.example.tentrilliondollars.order.repository.OrderRepository;
+import org.example.tentrilliondollars.order.service.EmailService;
+import org.example.tentrilliondollars.order.service.NotificationService;
 import org.example.tentrilliondollars.order.service.OrderAdminService;
-import org.example.tentrilliondollars.order.service.OrderService;
 import org.example.tentrilliondollars.product.dto.request.ProductRequest;
 import org.example.tentrilliondollars.product.dto.request.ProductUpdateRequest;
 import org.example.tentrilliondollars.product.dto.request.StockUpdateRequest;
@@ -32,13 +28,10 @@ import org.example.tentrilliondollars.s3.S3Service;
 import org.example.tentrilliondollars.user.entity.User;
 import org.example.tentrilliondollars.user.entity.UserRoleEnum;
 import org.example.tentrilliondollars.user.service.UserService;
-import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.example.tentrilliondollars.global.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +47,7 @@ public class ProductService {
     private final S3Service s3Service;
     private final OrderAdminService orderAdminService;
     private final OrderRepository orderRepository;
-    private final EntityManager entityManager;
+    private final NotificationService notificationService;
     @Value("${product.bucket.name}")
     String bucketName;
 
@@ -122,13 +115,16 @@ public class ProductService {
     public void updateAdminProductStock(Long productId, StockUpdateRequest stockupdateRequest,
         User user)
         throws NotFoundException {
+        //상품 조회
         Product product = getProduct(productId);
-
+        //상품 상태 검증 (삭제 상태인지)
         checkProductStateIsFalse(product);
-
+        //상품 소유 권한 검증
         validateProductOwner(user, product);
-
+        //상품 수량 업데이트
         product.updateStock(stockupdateRequest);
+        String productName = getProductDetail(productId).getName();
+        notificationService.notifyStockUpdate(productId,productName);
     }
 
     @Transactional
