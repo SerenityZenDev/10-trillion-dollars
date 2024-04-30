@@ -2,7 +2,7 @@
 
 ---
 
--이미지-
+# ![img.png](logo.jpg)
 
 - 프로젝트 이름 : 10-trillion-dollars
 - 프로젝트 기간 : 24.3.26 ~ 24.4.30
@@ -24,6 +24,7 @@
 - <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> : CI/CD 파이프라인을 구축하는 데 사용되었습니다.
 - <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> : 애플리케이션의 서버 호스팅에 사용되었습니다.
 - <img src="https://img.shields.io/badge/Amazon%20ECS-FF9900?style=for-the-badge&logo=Amazon%20ECS&logoColor=white"> : Docker 컨테이너를 실행하고 관리하기 위해 사용되었습니다.
+- <img src="https://img.shields.io/badge/Amazon%20ECR-FF9900?style=for-the-badge&logo=Amazon%20ECR&logoColor=white"> : Docker 이미지 저장소로 사용되었습니다.
 - <img src="https://img.shields.io/badge/amazon%20fargate-FF9900?style=for-the-badge&logo=awsfargate&logoColor=white"> : FATGATE : 프로젝트의 웹 서버로 사용되었습니다.
 - <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white"> : 정적 파일 및 미디어 파일을 저장하는 데 사용되었습니다.
 - <img src="https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white"> : 관계형 데이터베이스 서비스로 사용되었습니다.
@@ -37,12 +38,12 @@
 - <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=HTML5&logoColor=white"><img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white"> : 프론트엔드 개발에 사용되었습니다.
 
 ### 🔥 아키텍쳐
--아키텍쳐 이미지 추후 첨부-
 
+![img.png](architecture.png)
 
 ### ✨기능 구현
 *****
-ㅡ
+
 <details>
   <summary>유저 도메인</summary>
 
@@ -130,9 +131,8 @@
 * 박수민 - 주소 도메인, CI/CD 구축, DOCKER, HTTPS 적용, 부하 테스트
 * 손영효 - 주문 도메인, S3, 결제 모듈(카카오 API), 테스트 코드 작성(E2E)
 
-### ERD 다이어그램
--이미지 추후 첨부-
-
+### 📚 ERD 다이어그램
+![img.png](erd.png)
 
 
 
