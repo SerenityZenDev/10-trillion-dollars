@@ -108,7 +108,24 @@
 5. 리뷰 이미지 수정
 </details>
 
+### 내가 기여한 부분
 
+* 상품도메인 개발 
+  * 상품 관련 CRUD 구현
+* MSA 구성
+  * 모놀리식 아키텍쳐로 구성된 프로젝트를 MSA 프로젝트로 분리
+  * 해당 과정에서 각 데이터베이스의 연관관계를 끊고 필요한 데이터를 다른 서버에서 가져오기 위한 HTTP 통신 구현
+* 프론트 구현
+  * 각 MSA 서버와 연동되는 프론트 구현
+  * 바닐라 JS의 fetch를 이용한 서버와의 통신
+* API GATEWAY 구현
+  * 프론트를 구현하며 서버 주소를 신경쓰며 구현하기 어려운 점을 느낌
+  * 프론트와 MSA 서버 사이에 API GATEWAY를 통해 프론트에서의 접근이 편해짐
+  * 각 MSA 서버에서 진행중이던 JWT 토큰 해독을 API GATEWAY에서 진행하도록 변경 - 각 서버의 부담 감소
+* ELK
+  * MSA로 분리된 서버에서 문제가 발생할 경우 모든 서버를 확인해야 한다는 단점이 발생
+  * 모든 서버의 로그를 수집하는 ELK를 연동
+  * 에러 로그가 수집될 경우 SLACK에 알림 설정
 
 
 ### 👩🏼‍🤝‍👩🏼멤버 구성
@@ -134,6 +151,18 @@
 ### 📚 ERD 다이어그램
 ![img.png](erd.png)
 
+
+
+
+### 각 MSA 프로젝트 링크
+
+- 유저 + 주소 : https://github.com/10-trillion-dollars/dollar-user
+- 상품 : https://github.com/10-trillion-dollars/dollar-product
+- 주문 + 결제 : https://github.com/10-trillion-dollars/dollar-order
+- 리뷰 : https://github.com/10-trillion-dollars/dollar-review
+- API GATEWAY : https://github.com/10-trillion-dollars/dollar-apiGateway
+- ELK : https://github.com/10-trillion-dollars/dollar-elk
+- FRONT : https://github.com/10-trillion-dollars/dollar-front
 
 
 
